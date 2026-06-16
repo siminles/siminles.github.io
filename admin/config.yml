@@ -1,0 +1,32 @@
+backend:
+  name: github
+  repo: siminles/siminles.github.io
+  branch: main
+  base_url: https://api.github.com
+  auth_endpoint: device
+  client_id: Ov23lipdpdUMHMcvpBdb
+
+media_folder: assets/uploads
+public_folder: /assets/uploads
+
+collections:
+  - label: 文章
+    name: posts
+    folder: _posts
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: 标题, name: title, widget: string }
+      - { label: 发布日期, name: date, widget: datetime, format: "YYYY-MM-DD HH:mm:ss Z" }
+      - { label: 分类, name: categories, widget: list, required: false }
+      - { label: 标签, name: tags, widget: list, required: false }
+      - { label: 正文, name: body, widget: markdown }
+  - label: 页面
+    name: pages
+    files:
+      - label: 关于
+        name: about
+        file: about.md
+        fields:
+          - { label: 标题, name: title, widget: string }
+          - { label: 正文, name: body, widget: markdown }
