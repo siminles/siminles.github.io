@@ -148,7 +148,7 @@ function showTokenDialog(callback) {
   const token = prompt('请输入 GitHub Token（首次使用需要，存在浏览器本地）');
   if (token && token.trim()) {
     localStorage.setItem('github_token', token.trim());
-    GITHUB_TOKEN = ***
+    GITHUB_TOKEN = token.trim();
     if (callback) callback();
   }
 }
@@ -282,7 +282,7 @@ async function uploadImage(input) {
       const msg = result.data && result.data.message || '';
       if (result.status === 401 || result.status === 403 || msg.includes('token')) {
         localStorage.removeItem('github_token');
-        GITHUB_TOKEN = ***
+        GITHUB_TOKEN = null;
         setStatus('Token 无效，请重新设置', 'error');
       } else {
         setStatus('上传失败: ' + msg, 'error');
@@ -326,7 +326,7 @@ async function publishPost() {
       const msg = result.data && result.data.message || '';
       if (result.status === 401 || result.status === 403 || msg.includes('token')) {
         localStorage.removeItem('github_token');
-        GITHUB_TOKEN = ***
+        GITHUB_TOKEN = null;
         setStatus('Token 无效，请重新设置', 'error');
       } else {
         setStatus('发布失败: ' + msg, 'error');
