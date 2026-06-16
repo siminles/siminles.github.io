@@ -13,8 +13,6 @@
       padding: 20px;
     }
     .container { max-width: 780px; margin: 0 auto; }
-
-    /* 登录 */
     #loginBox {
       max-width: 360px;
       margin: 80px auto;
@@ -43,8 +41,6 @@
     }
     #loginBox button:hover { background: #a04a4a; }
     #loginError { color: #b85c5c; font-size: 0.9rem; margin-bottom: 0.8rem; display: none; }
-
-    /* 编辑器 */
     #editorBox { display: none; }
     .toolbar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
     .toolbar input, .toolbar select {
@@ -101,7 +97,7 @@
       border-radius: 3px;
       font-size: 0.85rem;
     }
-    .actions { margin-top: 16px; display: flex; gap: 8px; }
+    .actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
     .actions button {
       padding: 10px 24px;
       border: none;
@@ -118,7 +114,6 @@
     #status { font-size: 0.85rem; color: #888; margin-top: 8px; }
     #status.success { color: #4caf50; }
     #status.error { color: #b85c5c; }
-
     @media (max-width: 700px) {
       .editor-area { flex-direction: column; }
     }
@@ -172,26 +167,23 @@
   </div>
 
   <script>
-    // ============ 密码哈希（不存明文！）============
-    // 默认 'simin1024' 的 SHA-256 哈希
+    // ============ 密码（SHA-256 哈希）============
     const PASSWORD_HASH = '88ca87139d3682d8ea731ad94be56627df3ffda45370a4a88019ac1aa2e9db8e';
-
-    // GitHub Token（不写在代码里！第一次使用时输入，存在浏览器本地）
     let GITHUB_TOKEN = localStorage.getItem('github_token') || null;
     const GITHUB_REPO = 'siminles/siminles.github.io';
     const GITHUB_OWNER = 'siminles';
 
-    // 草稿存在 localStorage
     let categories = [];
     let tags = [];
 
-    // ============ 登录（SHA-256 验证）============
+    // ============ SHA-256 ============
     async function sha256(str) {
       const buf = new TextEncoder().encode(str);
       const hash = await crypto.subtle.digest('SHA-256', buf);
       return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
     }
 
+    // ============ 登录 ============
     async function handleLogin() {
       const pw = document.getElementById('passwordInput').value;
       const hash = await sha256(pw);
@@ -205,7 +197,6 @@
       }
     }
 
-    // 回车登录
     document.getElementById('passwordInput').addEventListener('keydown', e => {
       if (e.key === 'Enter') handleLogin();
     });
@@ -217,34 +208,25 @@
         const t = token.trim();
         localStorage.setItem('github_token', t);
         GITHUB_TOKEN = t;
-        callback(t);
+        if (callback) callback(t);
       }
     }
 
-    // ============ 标签管理 ============
+    // ============ 标签 ============
     function addTag(type) {
       const input = type === 'categories' ? document.getElementById('catInput') : document.getElementById('tagInput');
       const value = input.value.trim();
       if (!value) return;
-      if (type === 'categories') {
-        if (!categories.includes(value)) categories.push(value);
-        input.value = '';
-        renderTags('categories');
-      } else {
-        if (!tags.includes(value)) tags.push(value);
-        input.value = '';
-        renderTags('tags');
-      }
+      if (type === 'categories' && !categories.includes(value)) categories.push(value);
+      else if (type === 'tags' && !tags.includes(value)) tags.push(value);
+      input.value = '';
+      renderTags(type);
     }
 
     function removeTag(type, value) {
-      if (type === 'categories') {
-        categories = categories.filter(c => c !== value);
-        renderTags('categories');
-      } else {
-        tags = tags.filter(t => t !== value);
-        renderTags('tags');
-      }
+      if (type === 'categories') categories = categories.filter(c => c !== value);
+      else tags = tags.filter(t => t !== value);
+      renderTags(type);
     }
 
     function renderTags(type) {
@@ -259,7 +241,6 @@
     function updatePreview() {
       const body = document.getElementById('bodyInput').value;
       const preview = document.getElementById('previewPanel');
-      // 简单 Markdown 渲染（只处理基本元素）
       let html = body
         .replace(/^### (.+)$/gm, '<h3>$1</h3>')
         .replace(/^## (.+)$/gm, '<h2>$1</h2>')
@@ -268,6 +249,7 @@
         .replace(/\*(.+?)\*/g, '<em>$1</em>')
         .replace(/`(.+?)`/g, '<code>$1</code>')
         .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/!\[(.+?)\]\((.+?)\)/g, '<img src="$2" alt="$1" style="max-width:100%">')
         .replace(/(?:\r\n|\r|\n){2,}/g, '</p><p>')
         .replace(/(?:\r\n|\r|\n)/g, '<br>');
       preview.innerHTML = body.trim() ? `<p>${html}</p>` : '<p style="color:#aaa;">预览区</p>';
@@ -289,24 +271,26 @@
     function loadDraft() {
       const raw = localStorage.getItem('blog_draft');
       if (!raw) return;
-      const draft = JSON.parse(raw);
-      document.getElementById('titleInput').value = draft.title || '';
-      document.getElementById('dateInput').value = draft.date || '';
-      document.getElementById('bodyInput').value = draft.body || '';
-      categories = draft.categories || [];
-      tags = draft.tags || [];
-      renderTags('categories');
-      renderTags('tags');
-      updatePreview();
+      try {
+        const draft = JSON.parse(raw);
+        document.getElementById('titleInput').value = draft.title || '';
+        document.getElementById('dateInput').value = draft.date || '';
+        document.getElementById('bodyInput').value = draft.body || '';
+        categories = draft.categories || [];
+        tags = draft.tags || [];
+        renderTags('categories');
+        renderTags('tags');
+        updatePreview();
+      } catch(e) {}
     }
 
     // ============ 图片上传 ============
     async function uploadImage(input) {
       const file = input.files[0];
-      if (!file) return;
+      if (!file) { input.value = ''; return; }
 
       if (!GITHUB_TOKEN) {
-        showTokenDialog(() => uploadImage(input));
+        showTokenDialog(() => { input.value = ''; uploadImage(input); });
         return;
       }
 
@@ -319,52 +303,55 @@
       setStatus('正在上传图片...', '');
 
       try {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
+        // 读取为 Base64
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result.split(',')[1]);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(file);
+        });
 
-        reader.onload = async function() {
-          const base64 = reader.result.split(',')[1];
-          const timestamp = Date.now();
-          const ext = file.name.split('.').pop().toLowerCase();
-          const filename = `assets/uploads/${timestamp}.${ext}`;
+        const ts = Date.now();
+        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+        const path = `assets/uploads/${ts}.${ext}`;
 
-          const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURIComponent(filename)}`, {
-            method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${GITHUB_TOKEN}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              message: `上传图片 ${filename}`,
-              content: base64
-            })
-          });
+        const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${GITHUB_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: `upload ${path}`, content: base64 }),
+          signal: AbortSignal.timeout(30000)
+        });
 
-          const data = await resp.json();
+        const data = await res.json();
 
-          if (resp.ok) {
-            const md = `![${file.name.replace(/\.[^.]+$/, '')}](/assets/uploads/${timestamp}.${ext})`;
-            const textarea = document.getElementById('bodyInput');
-            const cursorPos = textarea.selectionStart;
-            const text = textarea.value;
-            textarea.value = text.slice(0, cursorPos) + md + '\n' + text.slice(cursorPos);
-            updatePreview();
-            setStatus('✅ 图片已插入', 'success');
+        if (res.ok) {
+          const md = `![${file.name.replace(/\.[^.]+$/, '')}](/assets/uploads/${ts}.${ext})`;
+          const ta = document.getElementById('bodyInput');
+          const pos = ta.selectionStart;
+          ta.value = ta.value.slice(0, pos) + md + '\n' + ta.value.slice(pos);
+          updatePreview();
+          setStatus('✅ 图片已插入', 'success');
+        } else {
+          const msg = data.message || '';
+          if (msg.includes('token') || res.status === 401 || res.status === 403) {
+            localStorage.removeItem('github_token');
+            GITHUB_TOKEN = null;
+            setStatus('Token 无效，请重新设置 Token', 'error');
           } else {
-            if ((data.message || '').includes('token')) {
-              localStorage.removeItem('github_token');
-              GITHUB_TOKEN = null;
-              setStatus('Token 无效，请重新输入', 'error');
-            } else {
-              setStatus('上传失败: ' + (data.message || '未知错误'), 'error');
-            }
+            setStatus('上传失败: ' + msg, 'error');
           }
-          input.value = '';
-        };
+        }
       } catch (err) {
-        setStatus('上传错误: ' + err.message, 'error');
-        input.value = '';
+        if (err.name === 'TimeoutError' || err.name === 'AbortError') {
+          setStatus('上传超时，图片太大或网络不稳定', 'error');
+        } else {
+          setStatus('上传出错: ' + (err.message || err), 'error');
+        }
       }
+      input.value = '';
     }
 
     // ============ 发布 ============
@@ -375,11 +362,8 @@
         setStatus('标题和正文不能为空', 'error');
         return;
       }
-
       if (!GITHUB_TOKEN) {
-        showTokenDialog(async token => {
-          if (token) await doPublish(title, body);
-        });
+        showTokenDialog(() => publishPost());
         return;
       }
       await doPublish(title, body);
@@ -387,55 +371,37 @@
 
     async function doPublish(title, body) {
       if (!GITHUB_TOKEN) {
-        showTokenDialog(async token => {
-          if (token) await doPublish(title, body);
-        });
+        showTokenDialog(() => doPublish(title, body));
         return;
       }
 
       const dateStr = document.getElementById('dateInput').value.trim() || new Date().toISOString().split('T')[0];
-      const slug = title
-        .replace(/[^\w\u4e00-\u9fa5a-zA-Z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .toLowerCase()
-        .slice(0, 50);
-
-      const catStr = categories.length > 0 ? `\ncategories: [${categories.map(c => `"${c}"`).join(', ')}]` : '';
-      const tagStr = tags.length > 0 ? `\ntags: [${tags.map(t => `"${t}"`).join(', ')}]` : '';
-
-      const content = `---
-layout: post
-title: "${title}"
-date: ${dateStr} 12:00:00 +0800${catStr}${tagStr}
----
-
-${body}
-`;
-
+      const slug = title.replace(/[^\w\u4e00-\u9fa5a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-').toLowerCase().slice(0, 50);
+      const catStr = categories.length ? '\ncategories: [' + categories.map(c => `"${c}"`).join(', ') + ']' : '';
+      const tagStr = tags.length ? '\ntags: [' + tags.map(t => `"${t}"`).join(', ') + ']' : '';
+      const content = `---\nlayout: post\ntitle: "${title}"\ndate: ${dateStr} 12:00:00 +0800${catStr}${tagStr}\n---\n\n${body}\n`;
       const filename = `_posts/${dateStr}-${slug}.md`;
 
       setStatus('正在发布...', '');
 
       try {
-        // 通过 GitHub API 创建文件
-        const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURIComponent(filename)}`, {
+        const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURIComponent(filename)}`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${GITHUB_TOKEN}`,
             'Content-Type': 'application/json',
-            'Accept': 'application/vnd.github.v3+json'
           },
           body: JSON.stringify({
             message: `新文章: ${title}`,
             content: btoa(unescape(encodeURIComponent(content)))
-          })
+          }),
+          signal: AbortSignal.timeout(30000)
         });
 
-        const data = await resp.json();
+        const data = await res.json();
 
-        if (resp.ok) {
-          setStatus(`✅ 发布成功！1-2 分钟后可见 → https://siminles.github.io/`, 'success');
-          // 清空草稿
+        if (res.ok) {
+          setStatus(`✅ 发布成功！1-2 分钟后可见`, 'success');
           localStorage.removeItem('blog_draft');
           document.getElementById('titleInput').value = '';
           document.getElementById('bodyInput').value = '';
@@ -444,24 +410,28 @@ ${body}
           renderTags('categories');
           renderTags('tags');
         } else {
-          const msg = data.message || '未知错误';
-          if (msg.includes('token')) {
+          const msg = data.message || '';
+          if (msg.includes('token') || res.status === 401 || res.status === 403) {
+            localStorage.removeItem('github_token');
             GITHUB_TOKEN = null;
-            setStatus(`Token 无效，请重新输入`, 'error');
+            setStatus('Token 无效，请重新设置', 'error');
           } else {
-            setStatus(`发布失败: ${msg}`, 'error');
+            setStatus('发布失败: ' + msg, 'error');
           }
         }
       } catch (err) {
-        setStatus(`网络错误: ${err.message}`, 'error');
+        if (err.name === 'TimeoutError' || err.name === 'AbortError') {
+          setStatus('发布超时，请稍后重试', 'error');
+        } else {
+          setStatus('发布出错: ' + (err.message || err), 'error');
+        }
       }
     }
 
-    // ============ 状态提示 ============
     function setStatus(text, type) {
       const el = document.getElementById('status');
       el.textContent = text;
-      el.className = type;
+      el.className = type || '';
     }
   </script>
 </body>
