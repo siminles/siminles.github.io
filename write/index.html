@@ -120,6 +120,8 @@ const GH_REPO = 'siminles.github.io';
 
 let categories = [];
 let tags = [];
+// 跟踪已上传图片的 blob URL，用于预览（避免空白期）
+let UPLOADED_BLOBS = {};
 
 // ============ SHA-256 ============
 async function sha256(s) {
@@ -187,7 +189,10 @@ function updatePreview() {
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     .replace(/`(.+?)`/g, '<code>$1</code>')
     .replace(/^- (.+)$/gm, '<li>$1</li>')
-    .replace(/!\[(.+?)\]\((.+?)\)/g, '<img src="$2" alt="$1" style="max-width:100%">')
+    .replace(/!\[(.+?)\]\((.+?)\)/g, (match, alt, src) => {
+      const realSrc = UPLOADED_BLOBS[src] || src;
+      return `<img src="${realSrc}" alt="${alt}" style="max-width:100%">`;
+    })
     .replace(/\n{2,}/g, '</p><p>')
     .replace(/\n/g, '<br>');
   pv.innerHTML = body.trim() ? '<p>' + h + '</p>' : '<p style="color:#aaa;">预览区</p>';
@@ -195,13 +200,17 @@ function updatePreview() {
 
 // ============ 草稿 ============
 function saveDraft() {
-  localStorage.setItem('blog_draft', JSON.stringify({
-    title: document.getElementById('titleInput').value,
-    date: document.getElementById('dateInput').value,
-    categories, tags,
-    body: document.getElementById('bodyInput').value
-  }));
-  setStatus('草稿已保存', 'success');
+  try {
+    localStorage.setItem('blog_draft', JSON.stringify({
+      title: document.getElementById('titleInput').value,
+      date: document.getElementById('dateInput').value,
+      categories, tags,
+      body: document.getElementById('bodyInput').value
+    }));
+    setStatus('草稿已保存', 'success');
+  } catch(e) {
+    setStatus('草稿保存失败：存储空间不足', 'error');
+  }
 }
 function loadDraft() {
   try {
@@ -276,10 +285,8 @@ async function uploadImage(input) {
       const ta = document.getElementById('bodyInput');
       const pos = ta.selectionStart;
       ta.value = ta.value.slice(0, pos) + md + '\n' + ta.value.slice(pos);
-      // 用本地 blob 立即显示预览（不等待部署）
-      const pv = document.getElementById('previewPanel');
-      const blobUrl = URL.createObjectURL(file);
-      pv.innerHTML += `<img src="${blobUrl}" alt="${file.name}" style="max-width:100%;margin:8px 0;">`;
+      // 用 blob URL 映射，预览区实时渲染
+      UPLOADED_BLOBS[`/assets/uploads/${ts}.${ext}`] = URL.createObjectURL(file);
       updatePreview();
       setStatus('✅ 图片已插入', 'success');
     } else {
@@ -305,14 +312,18 @@ async function publishPost() {
   if (!title || !body) { setStatus('标题和正文不能为空', 'error'); return; }
   if (!GITHUB_TOKEN) { showTokenDialog(() => publishPost()); return; }
 
-  const dateStr = document.getElementById('dateInput').value.trim() || new Date().toISOString().split('T')[0];
-  const slug = title.replace(/[^\w\u4e00-\u9fa5\s-]/g, '').replace(/\s+/g, '-').toLowerCase().slice(0, 50);
+  const dateStr = document.getElementById('dateInput').value.trim()
+    || (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })();
+  const slug = title.replace(/[^\w\u4e00-\u9fa5\s-]/g, '').replace(/\s+/g, '-').toLowerCase().slice(0, 50) || 'untitled';
   const cats = categories.length ? '\ncategories: [' + categories.map(c => `"${c}"`).join(', ') + ']' : '';
   const tgs = tags.length ? '\ntags: [' + tags.map(t => `"${t}"`).join(', ') + ']' : '';
   const content = `---\nlayout: post\ntitle: "${title}"\ndate: ${dateStr} 12:00:00 +0800${cats}${tgs}\n---\n\n${body}\n`;
 
   const filename = `_posts/${dateStr}-${slug}.md`;
-  const base64 = btoa(unescape(encodeURIComponent(content)));
+  // 用 TextEncoder 做 UTF-8 → Base64（替代已废弃的 unescape）
+  const bytes = new TextEncoder().encode(content);
+  let binary = ''; for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  const base64 = btoa(binary);
 
   setStatus('正在发布...', '');
 
