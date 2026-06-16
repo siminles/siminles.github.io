@@ -1,0 +1,19 @@
+---
+layout: default
+title: 关于
+---
+
+<article class="about-content">
+  <h1>关于这里</h1>
+
+  <p>一个安静的角落，记录一些细碎的、温柔的、真实的东西。</p>
+
+  <p>如果你偶然来到这里，欢迎坐坐。</p>
+
+  <hr style="margin: 2rem 0; border: none; border-top: 1px solid #eee;">
+
+  <p>联系方式：</p>
+  <ul>
+    <li>GitHub: <a href="https://github.com/siminles">@siminles</a></li>
+  </ul>
+</article>

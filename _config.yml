@@ -1,0 +1,26 @@
+title: simin 的小角落
+description: 记录一些细碎的、温柔的、真实的东西
+author: simin
+lang: zh-CN
+
+# 主题设置
+theme: null
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# 构建
+permalink: /:year/:month/:title/
+markdown: kramdown
+
+# 分页
+paginate: 10
+paginate_path: "/page/:num/"
+
+# 社交
+twitter_username:
+github_username: siminles
+
+# 域名
+url: "https://siminles.github.io"
+baseurl: ""
