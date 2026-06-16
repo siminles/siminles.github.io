@@ -1,0 +1,367 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>写文章</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #fafaf8;
+      color: #2c2c2c;
+      padding: 20px;
+    }
+    .container { max-width: 780px; margin: 0 auto; }
+
+    /* 登录 */
+    #loginBox {
+      max-width: 360px;
+      margin: 80px auto;
+      text-align: center;
+    }
+    #loginBox h1 { font-size: 1.4rem; margin-bottom: 1.5rem; }
+    #loginBox input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin-bottom: 0.8rem;
+      outline: none;
+    }
+    #loginBox input:focus { border-color: #b85c5c; }
+    #loginBox button {
+      width: 100%;
+      padding: 12px;
+      background: #b85c5c;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #loginBox button:hover { background: #a04a4a; }
+    #loginError { color: #b85c5c; font-size: 0.9rem; margin-bottom: 0.8rem; display: none; }
+
+    /* 编辑器 */
+    #editorBox { display: none; }
+    .toolbar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+    .toolbar input, .toolbar select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .toolbar input[type="text"] { flex: 1; min-width: 150px; }
+    .tag-input { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+    .tag-input input { min-width: 80px; }
+    .tag-item {
+      background: #eee;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tag-item .remove { cursor: pointer; color: #b85c5c; font-weight: bold; }
+    .editor-area {
+      display: flex;
+      gap: 16px;
+      min-height: 400px;
+    }
+    .editor-area textarea {
+      flex: 1;
+      padding: 16px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      font-family: "SF Mono", "Fira Code", "Courier New", monospace;
+      resize: vertical;
+      outline: none;
+    }
+    .editor-area textarea:focus { border-color: #b85c5c; }
+    .preview-panel {
+      flex: 1;
+      padding: 16px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      overflow-y: auto;
+      line-height: 1.8;
+      font-size: 0.95rem;
+    }
+    .preview-panel h1 { font-size: 1.3rem; margin: 1rem 0 0.5rem; }
+    .preview-panel h2 { font-size: 1.15rem; margin: 0.8rem 0 0.4rem; }
+    .preview-panel p { margin-bottom: 0.8rem; }
+    .preview-panel code {
+      background: #f0f0ee;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.85rem;
+    }
+    .actions { margin-top: 16px; display: flex; gap: 8px; }
+    .actions button {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    .btn-publish { background: #b85c5c; color: #fff; }
+    .btn-publish:hover { background: #a04a4a; }
+    .btn-save { background: #eee; color: #333; }
+    .btn-save:hover { background: #ddd; }
+    #status { font-size: 0.85rem; color: #888; margin-top: 8px; }
+    #status.success { color: #4caf50; }
+    #status.error { color: #b85c5c; }
+
+    @media (max-width: 700px) {
+      .editor-area { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- 登录 -->
+    <div id="loginBox">
+      <h1>✏️ 写文章</h1>
+      <p style="color:#888; font-size:0.85rem; margin-bottom:1.2rem;">输入密码进入后台</p>
+      <div id="loginError">密码错误</div>
+      <input type="password" id="passwordInput" placeholder="请输入密码" autocomplete="off" />
+      <button onclick="handleLogin()">进入后台</button>
+    </div>
+
+    <!-- 编辑器 -->
+    <div id="editorBox">
+      <div class="toolbar">
+        <input type="text" id="titleInput" placeholder="文章标题" />
+        <input type="text" id="dateInput" placeholder="日期 (2026-06-16)" />
+        <div class="tag-input">
+          <input type="text" id="catInput" placeholder="分类" />
+          <button onclick="addTag('categories')" style="padding:8px 12px;background:#eee;border:1px solid #ddd;border-radius:4px;cursor:pointer;">+</button>
+          <div id="categoryTags"></div>
+        </div>
+        <div class="tag-input">
+          <input type="text" id="tagInput" placeholder="标签" />
+          <button onclick="addTag('tags')" style="padding:8px 12px;background:#eee;border:1px solid #ddd;border-radius:4px;cursor:pointer;">+</button>
+          <div id="tagTags"></div>
+        </div>
+      </div>
+
+      <div class="editor-area">
+        <textarea id="bodyInput" placeholder="正文（Markdown）" oninput="updatePreview()"></textarea>
+        <div class="preview-panel" id="previewPanel">
+          <p style="color:#aaa;">预览区</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-save" onclick="saveDraft()">保存草稿</button>
+        <button class="btn-publish" onclick="publishPost()">发布</button>
+      </div>
+      <div id="status"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // ============ 配置 ============
+    // 密码：你自己设，改下面这行
+    const BLOG_PASSWORD = 'simin1024';
+
+    // GitHub Token（我先让你配，实际使用时配一个只写你博客仓库的 fine-grained token）
+    let GITHUB_TOKEN = null;
+    const GITHUB_REPO = 'siminles/siminles.github.io';
+    const GITHUB_OWNER = 'siminles';
+
+    // 草稿存在 localStorage
+    let categories = [];
+    let tags = [];
+
+    // ============ 登录 ============
+    function handleLogin() {
+      const pw = document.getElementById('passwordInput').value;
+      if (pw === BLOG_PASSWORD) {
+        document.getElementById('loginBox').style.display = 'none';
+        document.getElementById('editorBox').style.display = 'block';
+        document.getElementById('loginError').style.display = 'none';
+        loadDraft();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+      }
+    }
+
+    // 回车登录
+    document.getElementById('passwordInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleLogin();
+    });
+
+    // ============ 标签管理 ============
+    function addTag(type) {
+      const input = type === 'categories' ? document.getElementById('catInput') : document.getElementById('tagInput');
+      const value = input.value.trim();
+      if (!value) return;
+      if (type === 'categories') {
+        if (!categories.includes(value)) categories.push(value);
+        input.value = '';
+        renderTags('categories');
+      } else {
+        if (!tags.includes(value)) tags.push(value);
+        input.value = '';
+        renderTags('tags');
+      }
+    }
+
+    function removeTag(type, value) {
+      if (type === 'categories') {
+        categories = categories.filter(c => c !== value);
+        renderTags('categories');
+      } else {
+        tags = tags.filter(t => t !== value);
+        renderTags('tags');
+      }
+    }
+
+    function renderTags(type) {
+      const container = document.getElementById(type === 'categories' ? 'categoryTags' : 'tagTags');
+      const items = type === 'categories' ? categories : tags;
+      container.innerHTML = items.map(t =>
+        `<span class="tag-item">${t} <span class="remove" onclick="removeTag('${type}','${t}')">×</span></span>`
+      ).join('');
+    }
+
+    // ============ 预览 ============
+    function updatePreview() {
+      const body = document.getElementById('bodyInput').value;
+      const preview = document.getElementById('previewPanel');
+      // 简单 Markdown 渲染（只处理基本元素）
+      let html = body
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/`(.+?)`/g, '<code>$1</code>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/(?:\r\n|\r|\n){2,}/g, '</p><p>')
+        .replace(/(?:\r\n|\r|\n)/g, '<br>');
+      preview.innerHTML = body.trim() ? `<p>${html}</p>` : '<p style="color:#aaa;">预览区</p>';
+    }
+
+    // ============ 草稿 ============
+    function saveDraft() {
+      const draft = {
+        title: document.getElementById('titleInput').value,
+        date: document.getElementById('dateInput').value,
+        categories: [...categories],
+        tags: [...tags],
+        body: document.getElementById('bodyInput').value
+      };
+      localStorage.setItem('blog_draft', JSON.stringify(draft));
+      setStatus('草稿已保存', 'success');
+    }
+
+    function loadDraft() {
+      const raw = localStorage.getItem('blog_draft');
+      if (!raw) return;
+      const draft = JSON.parse(raw);
+      document.getElementById('titleInput').value = draft.title || '';
+      document.getElementById('dateInput').value = draft.date || '';
+      document.getElementById('bodyInput').value = draft.body || '';
+      categories = draft.categories || [];
+      tags = draft.tags || [];
+      renderTags('categories');
+      renderTags('tags');
+      updatePreview();
+    }
+
+    // ============ 发布 ============
+    async function publishPost() {
+      const title = document.getElementById('titleInput').value.trim();
+      const body = document.getElementById('bodyInput').value.trim();
+      if (!title || !body) {
+        setStatus('标题和正文不能为空', 'error');
+        return;
+      }
+
+      if (!GITHUB_TOKEN) {
+        GITHUB_TOKEN = prompt('请输入 GitHub Token（首次使用需要）：');
+        if (!GITHUB_TOKEN) return;
+      }
+
+      const dateStr = document.getElementById('dateInput').value.trim() || new Date().toISOString().split('T')[0];
+      const slug = title
+        .replace(/[^\w\u4e00-\u9fa5a-zA-Z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .toLowerCase()
+        .slice(0, 50);
+
+      const catStr = categories.length > 0 ? `\ncategories: [${categories.map(c => `"${c}"`).join(', ')}]` : '';
+      const tagStr = tags.length > 0 ? `\ntags: [${tags.map(t => `"${t}"`).join(', ')}]` : '';
+
+      const content = `---
+layout: post
+title: "${title}"
+date: ${dateStr} 12:00:00 +0800${catStr}${tagStr}
+---
+
+${body}
+`;
+
+      const filename = `_posts/${dateStr}-${slug}.md`;
+
+      setStatus('正在发布...', '');
+
+      try {
+        // 通过 GitHub API 创建文件
+        const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURIComponent(filename)}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${GITHUB_TOKEN}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify({
+            message: `新文章: ${title}`,
+            content: btoa(unescape(encodeURIComponent(content)))
+          })
+        });
+
+        const data = await resp.json();
+
+        if (resp.ok) {
+          setStatus(`✅ 发布成功！1-2 分钟后可见 → https://siminles.github.io/`, 'success');
+          // 清空草稿
+          localStorage.removeItem('blog_draft');
+          document.getElementById('titleInput').value = '';
+          document.getElementById('bodyInput').value = '';
+          categories = [];
+          tags = [];
+          renderTags('categories');
+          renderTags('tags');
+        } else {
+          const msg = data.message || '未知错误';
+          if (msg.includes('token')) {
+            GITHUB_TOKEN = null;
+            setStatus(`Token 无效，请重新输入`, 'error');
+          } else {
+            setStatus(`发布失败: ${msg}`, 'error');
+          }
+        }
+      } catch (err) {
+        setStatus(`网络错误: ${err.message}`, 'error');
+      }
+    }
+
+    // ============ 状态提示 ============
+    function setStatus(text, type) {
+      const el = document.getElementById('status');
+      el.textContent = text;
+      el.className = type;
+    }
+  </script>
+</body>
+</html>
