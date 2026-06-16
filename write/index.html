@@ -13,97 +13,48 @@
       padding: 20px;
     }
     .container { max-width: 780px; margin: 0 auto; }
-    #loginBox {
-      max-width: 360px;
-      margin: 80px auto;
-      text-align: center;
-    }
+    #loginBox { max-width: 360px; margin: 80px auto; text-align: center; }
     #loginBox h1 { font-size: 1.4rem; margin-bottom: 1.5rem; }
     #loginBox input {
-      width: 100%;
-      padding: 12px;
-      font-size: 1rem;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      margin-bottom: 0.8rem;
-      outline: none;
+      width: 100%; padding: 12px; font-size: 1rem;
+      border: 1px solid #ddd; border-radius: 6px; margin-bottom: 0.8rem; outline: none;
     }
     #loginBox input:focus { border-color: #b85c5c; }
     #loginBox button {
-      width: 100%;
-      padding: 12px;
-      background: #b85c5c;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      cursor: pointer;
+      width: 100%; padding: 12px; background: #b85c5c; color: #fff;
+      border: none; border-radius: 6px; font-size: 1rem; cursor: pointer;
     }
     #loginBox button:hover { background: #a04a4a; }
     #loginError { color: #b85c5c; font-size: 0.9rem; margin-bottom: 0.8rem; display: none; }
     #editorBox { display: none; }
     .toolbar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
     .toolbar input, .toolbar select {
-      padding: 8px 12px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 0.9rem;
+      padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem;
     }
     .toolbar input[type="text"] { flex: 1; min-width: 150px; }
     .tag-input { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
     .tag-input input { min-width: 80px; }
     .tag-item {
-      background: #eee;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      background: #eee; padding: 4px 10px; border-radius: 12px;
+      font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;
     }
     .tag-item .remove { cursor: pointer; color: #b85c5c; font-weight: bold; }
-    .editor-area {
-      display: flex;
-      gap: 16px;
-      min-height: 400px;
-    }
+    .editor-area { display: flex; gap: 16px; min-height: 400px; }
     .editor-area textarea {
-      flex: 1;
-      padding: 16px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      line-height: 1.7;
+      flex: 1; padding: 16px; border: 1px solid #ddd; border-radius: 6px;
+      font-size: 0.95rem; line-height: 1.7;
       font-family: "SF Mono", "Fira Code", "Courier New", monospace;
-      resize: vertical;
-      outline: none;
+      resize: vertical; outline: none;
     }
     .editor-area textarea:focus { border-color: #b85c5c; }
     .preview-panel {
-      flex: 1;
-      padding: 16px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      overflow-y: auto;
-      line-height: 1.8;
-      font-size: 0.95rem;
-    }
-    .preview-panel h1 { font-size: 1.3rem; margin: 1rem 0 0.5rem; }
-    .preview-panel h2 { font-size: 1.15rem; margin: 0.8rem 0 0.4rem; }
-    .preview-panel p { margin-bottom: 0.8rem; }
-    .preview-panel code {
-      background: #f0f0ee;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-size: 0.85rem;
+      flex: 1; padding: 16px; border: 1px solid #ddd; border-radius: 6px;
+      overflow-y: auto; line-height: 1.8; font-size: 0.95rem;
     }
     .actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
     .actions button {
-      padding: 10px 24px;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      cursor: pointer;
+      padding: 10px 24px; border: none; border-radius: 6px;
+      font-size: 0.95rem; cursor: pointer;
     }
     .btn-publish { background: #b85c5c; color: #fff; }
     .btn-publish:hover { background: #a04a4a; }
@@ -114,333 +65,283 @@
     #status { font-size: 0.85rem; color: #888; margin-top: 8px; }
     #status.success { color: #4caf50; }
     #status.error { color: #b85c5c; }
-    @media (max-width: 700px) {
-      .editor-area { flex-direction: column; }
-    }
+    @media (max-width: 700px) { .editor-area { flex-direction: column; } }
   </style>
 </head>
 <body>
-  <div class="container">
+<div class="container">
 
-    <!-- 登录 -->
-    <div id="loginBox">
-      <h1>✏️ 写文章</h1>
-      <p style="color:#888; font-size:0.85rem; margin-bottom:1.2rem;">输入密码进入后台</p>
-      <div id="loginError">密码错误</div>
-      <input type="password" id="passwordInput" placeholder="请输入密码" autocomplete="off" />
-      <button onclick="handleLogin()">进入后台</button>
+<!-- 登录 -->
+<div id="loginBox">
+  <h1>✏️ 写文章</h1>
+  <p style="color:#888;font-size:0.85rem;margin-bottom:1.2rem;">输入密码进入后台</p>
+  <div id="loginError">密码错误</div>
+  <input type="password" id="passwordInput" placeholder="请输入密码" autocomplete="off" />
+  <button onclick="handleLogin()">进入后台</button>
+</div>
+
+<!-- 编辑器 -->
+<div id="editorBox">
+  <div class="toolbar">
+    <input type="text" id="titleInput" placeholder="文章标题" />
+    <input type="text" id="dateInput" placeholder="日期 (2026-06-16)" />
+    <div class="tag-input">
+      <input type="text" id="catInput" placeholder="分类" />
+      <button onclick="addTag('categories')" style="padding:8px 12px;background:#eee;border:1px solid #ddd;border-radius:4px;cursor:pointer;">+</button>
+      <div id="categoryTags"></div>
     </div>
-
-    <!-- 编辑器 -->
-    <div id="editorBox">
-      <div class="toolbar">
-        <input type="text" id="titleInput" placeholder="文章标题" />
-        <input type="text" id="dateInput" placeholder="日期 (2026-06-16)" />
-        <div class="tag-input">
-          <input type="text" id="catInput" placeholder="分类" />
-          <button onclick="addTag('categories')" style="padding:8px 12px;background:#eee;border:1px solid #ddd;border-radius:4px;cursor:pointer;">+</button>
-          <div id="categoryTags"></div>
-        </div>
-        <div class="tag-input">
-          <input type="text" id="tagInput" placeholder="标签" />
-          <button onclick="addTag('tags')" style="padding:8px 12px;background:#eee;border:1px solid #ddd;border-radius:4px;cursor:pointer;">+</button>
-          <div id="tagTags"></div>
-        </div>
-      </div>
-
-      <div class="editor-area">
-        <textarea id="bodyInput" placeholder="正文（Markdown）" oninput="updatePreview()"></textarea>
-        <div class="preview-panel" id="previewPanel">
-          <p style="color:#aaa;">预览区</p>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="btn-upload" onclick="document.getElementById('imageInput').click()">🖼️ 上传图片</button>
-        <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="uploadImage(this)">
-        <button class="btn-save" onclick="saveDraft()">保存草稿</button>
-        <button class="btn-publish" onclick="publishPost()">发布</button>
-      </div>
-      <div id="status"></div>
+    <div class="tag-input">
+      <input type="text" id="tagInput" placeholder="标签" />
+      <button onclick="addTag('tags')" style="padding:8px 12px;background:#eee;border:1px solid #ddd;border-radius:4px;cursor:pointer;">+</button>
+      <div id="tagTags"></div>
     </div>
-
   </div>
+  <div class="editor-area">
+    <textarea id="bodyInput" placeholder="正文（Markdown）" oninput="updatePreview()"></textarea>
+    <div class="preview-panel" id="previewPanel"><p style="color:#aaa;">预览区</p></div>
+  </div>
+  <div class="actions">
+    <button class="btn-upload" onclick="document.getElementById('imageInput').click()">🖼️ 上传图片</button>
+    <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="uploadImage(this)">
+    <button class="btn-save" onclick="saveDraft()">保存草稿</button>
+    <button class="btn-publish" onclick="publishPost()">发布</button>
+  </div>
+  <div id="status"></div>
+</div>
 
-  <script>
-    // ============ 密码（SHA-256 哈希）============
-    const PASSWORD_HASH = '88ca87139d3682d8ea731ad94be56627df3ffda45370a4a88019ac1aa2e9db8e';
-    let GITHUB_TOKEN = localStorage.getItem('github_token') || null;
-    const GITHUB_REPO = 'siminles/siminles.github.io';
-    const GITHUB_OWNER = 'siminles';
+</div>
 
-    let categories = [];
-    let tags = [];
+<script>
+// ============ 配置 ============
+const PASSWORD_HASH = '88ca87139d3682d8ea731ad94be56627df3ffda45370a4a88019ac1aa2e9db8e';
+let GITHUB_TOKEN = localStorage.getItem('github_token') || null;
+const GH_OWNER = 'siminles';
+const GH_REPO = 'siminles.github.io';
 
-    // ============ SHA-256 ============
-    async function sha256(str) {
-      const buf = new TextEncoder().encode(str);
-      const hash = await crypto.subtle.digest('SHA-256', buf);
-      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
-    }
+let categories = [];
+let tags = [];
 
-    // ============ 登录 ============
-    async function handleLogin() {
-      const pw = document.getElementById('passwordInput').value;
-      const hash = await sha256(pw);
-      if (hash === PASSWORD_HASH) {
-        document.getElementById('loginBox').style.display = 'none';
-        document.getElementById('editorBox').style.display = 'block';
-        document.getElementById('loginError').style.display = 'none';
-        loadDraft();
-      } else {
-        document.getElementById('loginError').style.display = 'block';
+// ============ SHA-256 ============
+async function sha256(s) {
+  const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// ============ 登录 ============
+async function handleLogin() {
+  const pw = document.getElementById('passwordInput').value;
+  if (await sha256(pw) === PASSWORD_HASH) {
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('editorBox').style.display = 'block';
+    document.getElementById('loginError').style.display = 'none';
+    loadDraft();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+document.getElementById('passwordInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleLogin();
+});
+
+// ============ Token 弹窗 ============
+function showTokenDialog(callback) {
+  const token = prompt('请输入 GitHub Token（首次使用需要，存在浏览器本地）');
+  if (token && token.trim()) {
+    localStorage.setItem('github_token', token.trim());
+    GITHUB_TOKEN = ***
+    if (callback) callback();
+  }
+}
+
+// ============ 标签 ============
+function addTag(t) {
+  const input = document.getElementById(t === 'categories' ? 'catInput' : 'tagInput');
+  const v = input.value.trim();
+  if (!v) return;
+  const arr = t === 'categories' ? categories : tags;
+  if (!arr.includes(v)) arr.push(v);
+  input.value = '';
+  renderTags(t);
+}
+function removeTag(t, v) {
+  const arr = t === 'categories' ? categories : tags;
+  const idx = arr.indexOf(v);
+  if (idx > -1) arr.splice(idx, 1);
+  renderTags(t);
+}
+function renderTags(t) {
+  const el = document.getElementById(t === 'categories' ? 'categoryTags' : 'tagTags');
+  const arr = t === 'categories' ? categories : tags;
+  el.innerHTML = arr.map(x => `<span class="tag-item">${x} <span class="remove" onclick="removeTag('${t}','${x}')">×</span></span>`).join('');
+}
+
+// ============ 预览 ============
+function updatePreview() {
+  const body = document.getElementById('bodyInput').value;
+  const pv = document.getElementById('previewPanel');
+  let h = body
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`(.+?)`/g, '<code>$1</code>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/!\[(.+?)\]\((.+?)\)/g, '<img src="$2" alt="$1" style="max-width:100%">')
+    .replace(/\n{2,}/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+  pv.innerHTML = body.trim() ? '<p>' + h + '</p>' : '<p style="color:#aaa;">预览区</p>';
+}
+
+// ============ 草稿 ============
+function saveDraft() {
+  localStorage.setItem('blog_draft', JSON.stringify({
+    title: document.getElementById('titleInput').value,
+    date: document.getElementById('dateInput').value,
+    categories, tags,
+    body: document.getElementById('bodyInput').value
+  }));
+  setStatus('草稿已保存', 'success');
+}
+function loadDraft() {
+  try {
+    const d = JSON.parse(localStorage.getItem('blog_draft') || '{}');
+    document.getElementById('titleInput').value = d.title || '';
+    document.getElementById('dateInput').value = d.date || '';
+    document.getElementById('bodyInput').value = d.body || '';
+    categories = d.categories || [];
+    tags = d.tags || [];
+    renderTags('categories'); renderTags('tags');
+    updatePreview();
+  } catch(e) {}
+}
+
+// ============ 封装 XHR Promise ============
+function ghRequest(method, path, body) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const url = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`;
+    xhr.open(method, url, true);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + GITHUB_TOKEN);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('User-Agent', 'simin-blog/1.0');
+    xhr.timeout = 45000;
+    xhr.onload = () => {
+      try {
+        resolve({ ok: xhr.status >= 200 && xhr.status < 300, status: xhr.status, data: JSON.parse(xhr.responseText) });
+      } catch(e) {
+        resolve({ ok: false, status: xhr.status, data: { message: '响应解析失败' } });
       }
-    }
+    };
+    xhr.onerror = () => reject(new Error('网络请求失败'));
+    xhr.ontimeout = () => reject(new Error('请求超时'));
+    xhr.send(JSON.stringify(body));
+  });
+}
 
-    document.getElementById('passwordInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') handleLogin();
+// ============ 图片上传（XHR 方式）============
+async function uploadImage(input) {
+  const file = input.files[0];
+  if (!file) { input.value = ''; return; }
+
+  if (!GITHUB_TOKEN) {
+    showTokenDialog(() => uploadImage(input));
+    return;
+  }
+
+  if (file.size > 10 * 1024 * 1024) {
+    setStatus('图片太大，请控制在 10MB 以内', 'error');
+    input.value = '';
+    return;
+  }
+
+  setStatus('正在上传图片...', '');
+
+  try {
+    const base64 = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result.split(',')[1]);
+      r.onerror = () => reject(r.error);
+      r.readAsDataURL(file);
     });
 
-    // ============ Token 管理 ============
-    function showTokenDialog(callback) {
-      const token = prompt('请输入 GitHub Token（首次使用需要）\nToken 将保存在浏览器本地，不会上传到服务器');
-      if (token && token.trim()) {
-        const t = token.trim();
-        localStorage.setItem('github_token', t);
-        GITHUB_TOKEN = t;
-        if (callback) callback(t);
+    const ts = Date.now();
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+    const path = `assets/uploads/${ts}.${ext}`;
+
+    const result = await ghRequest('PUT', path, { message: `upload ${path}`, content: base64 });
+
+    if (result.ok) {
+      const md = `![${file.name.replace(/\.[^.]+$/, '')}](/assets/uploads/${ts}.${ext})`;
+      const ta = document.getElementById('bodyInput');
+      const pos = ta.selectionStart;
+      ta.value = ta.value.slice(0, pos) + md + '\n' + ta.value.slice(pos);
+      updatePreview();
+      setStatus('✅ 图片已插入', 'success');
+    } else {
+      const msg = result.data && result.data.message || '';
+      if (result.status === 401 || result.status === 403 || msg.includes('token')) {
+        localStorage.removeItem('github_token');
+        GITHUB_TOKEN = ***
+        setStatus('Token 无效，请重新设置', 'error');
+      } else {
+        setStatus('上传失败: ' + msg, 'error');
       }
     }
+  } catch(err) {
+    setStatus('上传出错: ' + err.message, 'error');
+  }
+  input.value = '';
+}
 
-    // ============ 标签 ============
-    function addTag(type) {
-      const input = type === 'categories' ? document.getElementById('catInput') : document.getElementById('tagInput');
-      const value = input.value.trim();
-      if (!value) return;
-      if (type === 'categories' && !categories.includes(value)) categories.push(value);
-      else if (type === 'tags' && !tags.includes(value)) tags.push(value);
-      input.value = '';
-      renderTags(type);
-    }
+// ============ 发布（XHR 方式）============
+async function publishPost() {
+  const title = document.getElementById('titleInput').value.trim();
+  const body = document.getElementById('bodyInput').value.trim();
+  if (!title || !body) { setStatus('标题和正文不能为空', 'error'); return; }
+  if (!GITHUB_TOKEN) { showTokenDialog(() => publishPost()); return; }
 
-    function removeTag(type, value) {
-      if (type === 'categories') categories = categories.filter(c => c !== value);
-      else tags = tags.filter(t => t !== value);
-      renderTags(type);
-    }
+  const dateStr = document.getElementById('dateInput').value.trim() || new Date().toISOString().split('T')[0];
+  const slug = title.replace(/[^\w\u4e00-\u9fa5\s-]/g, '').replace(/\s+/g, '-').toLowerCase().slice(0, 50);
+  const cats = categories.length ? '\ncategories: [' + categories.map(c => `"${c}"`).join(', ') + ']' : '';
+  const tgs = tags.length ? '\ntags: [' + tags.map(t => `"${t}"`).join(', ') + ']' : '';
+  const content = `---\nlayout: post\ntitle: "${title}"\ndate: ${dateStr} 12:00:00 +0800${cats}${tgs}\n---\n\n${body}\n`;
 
-    function renderTags(type) {
-      const container = document.getElementById(type === 'categories' ? 'categoryTags' : 'tagTags');
-      const items = type === 'categories' ? categories : tags;
-      container.innerHTML = items.map(t =>
-        `<span class="tag-item">${t} <span class="remove" onclick="removeTag('${type}','${t}')">×</span></span>`
-      ).join('');
-    }
+  const filename = `_posts/${dateStr}-${slug}.md`;
+  const base64 = btoa(unescape(encodeURIComponent(content)));
 
-    // ============ 预览 ============
-    function updatePreview() {
-      const body = document.getElementById('bodyInput').value;
-      const preview = document.getElementById('previewPanel');
-      let html = body
-        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.+?)\*/g, '<em>$1</em>')
-        .replace(/`(.+?)`/g, '<code>$1</code>')
-        .replace(/^- (.+)$/gm, '<li>$1</li>')
-        .replace(/!\[(.+?)\]\((.+?)\)/g, '<img src="$2" alt="$1" style="max-width:100%">')
-        .replace(/(?:\r\n|\r|\n){2,}/g, '</p><p>')
-        .replace(/(?:\r\n|\r|\n)/g, '<br>');
-      preview.innerHTML = body.trim() ? `<p>${html}</p>` : '<p style="color:#aaa;">预览区</p>';
-    }
+  setStatus('正在发布...', '');
 
-    // ============ 草稿 ============
-    function saveDraft() {
-      const draft = {
-        title: document.getElementById('titleInput').value,
-        date: document.getElementById('dateInput').value,
-        categories: [...categories],
-        tags: [...tags],
-        body: document.getElementById('bodyInput').value
-      };
-      localStorage.setItem('blog_draft', JSON.stringify(draft));
-      setStatus('草稿已保存', 'success');
-    }
+  try {
+    const result = await ghRequest('PUT', filename, { message: `新文章: ${title}`, content: base64 });
 
-    function loadDraft() {
-      const raw = localStorage.getItem('blog_draft');
-      if (!raw) return;
-      try {
-        const draft = JSON.parse(raw);
-        document.getElementById('titleInput').value = draft.title || '';
-        document.getElementById('dateInput').value = draft.date || '';
-        document.getElementById('bodyInput').value = draft.body || '';
-        categories = draft.categories || [];
-        tags = draft.tags || [];
-        renderTags('categories');
-        renderTags('tags');
-        updatePreview();
-      } catch(e) {}
-    }
-
-    // ============ 图片上传 ============
-    async function uploadImage(input) {
-      const file = input.files[0];
-      if (!file) { input.value = ''; return; }
-
-      if (!GITHUB_TOKEN) {
-        showTokenDialog(() => uploadImage(input));
-        return;
-      }
-
-      if (file.size > 10 * 1024 * 1024) {
-        setStatus('图片太大，请控制在 10MB 以内', 'error');
-        input.value = '';
-        return;
-      }
-
-      setStatus('正在上传图片...', '');
-
-      try {
-        // 读取为 Base64
-        const base64 = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result.split(',')[1]);
-          reader.onerror = () => reject(reader.error);
-          reader.readAsDataURL(file);
-        });
-
-        const ts = Date.now();
-        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
-        const path = `assets/uploads/${ts}.${ext}`;
-
-        // 优先走本地代理（局域网），失败则直连
-        const proxyUrl = `http://192.168.8.133:18790/upload`;
-        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
-        const path = `assets/uploads/${ts}.${ext}`;
-
-        const directRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURIComponent(path)}`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${GITHUB_TOKEN}`,
-            'Content-Type': 'application/json',
-            'User-Agent': 'simin-blog/1.0',
-            'Accept': 'application/vnd.github.v3+json'
-          },
-          body: JSON.stringify({ message: `upload ${path}`, content: base64 }),
-          signal: AbortSignal.timeout(30000)
-        });
-        const data = await directRes.json();
-        const res = directRes;
-
-        if (res.ok) {
-          const md = `![${file.name.replace(/\.[^.]+$/, '')}](/assets/uploads/${ts}.${ext})`;
-          const ta = document.getElementById('bodyInput');
-          const pos = ta.selectionStart;
-          ta.value = ta.value.slice(0, pos) + md + '\n' + ta.value.slice(pos);
-          updatePreview();
-          setStatus('✅ 图片已插入', 'success');
-        } else {
-          const msg = data.message || '';
-          if (msg.includes('token') || res.status === 401 || res.status === 403) {
-            localStorage.removeItem('github_token');
-            GITHUB_TOKEN = null;
-            setStatus('Token 无效，请重新设置 Token', 'error');
-          } else {
-            setStatus('上传失败: ' + msg, 'error');
-          }
-        }
-      } catch (err) {
-        if (err.name === 'TimeoutError' || err.name === 'AbortError') {
-          setStatus('上传超时，图片太大或网络不稳定', 'error');
-        } else {
-          setStatus('上传出错: ' + (err.message || err), 'error');
-        }
-      }
-      input.value = '';
-    }
-
-    // ============ 发布 ============
-    async function publishPost() {
-      const title = document.getElementById('titleInput').value.trim();
-      const body = document.getElementById('bodyInput').value.trim();
-      if (!title || !body) {
-        setStatus('标题和正文不能为空', 'error');
-        return;
-      }
-      if (!GITHUB_TOKEN) {
-        showTokenDialog(() => publishPost());
-        return;
-      }
-      await doPublish(title, body);
-    }
-
-    async function doPublish(title, body) {
-      if (!GITHUB_TOKEN) {
-        showTokenDialog(() => doPublish(title, body));
-        return;
-      }
-
-      const dateStr = document.getElementById('dateInput').value.trim() || new Date().toISOString().split('T')[0];
-      const slug = title.replace(/[^\w\u4e00-\u9fa5a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-').toLowerCase().slice(0, 50);
-      const catStr = categories.length ? '\ncategories: [' + categories.map(c => `"${c}"`).join(', ') + ']' : '';
-      const tagStr = tags.length ? '\ntags: [' + tags.map(t => `"${t}"`).join(', ') + ']' : '';
-      const content = `---\nlayout: post\ntitle: "${title}"\ndate: ${dateStr} 12:00:00 +0800${catStr}${tagStr}\n---\n\n${body}\n`;
-      const filename = `_posts/${dateStr}-${slug}.md`;
-
-      setStatus('正在发布...', '');
-
-      try {
-        const base64 = btoa(unescape(encodeURIComponent(content)));
-
-        const directRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURIComponent(filename)}`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${GITHUB_TOKEN}`,
-            'Content-Type': 'application/json',
-            'User-Agent': 'simin-blog/1.0',
-            'Accept': 'application/vnd.github.v3+json'
-          },
-          body: JSON.stringify({ message: `新文章: ${title}`, content: base64 }),
-          signal: AbortSignal.timeout(30000)
-        });
-        const data = await directRes.json();
-        const res = directRes;
-
-        if (res.ok) {
-          setStatus(`✅ 发布成功！1-2 分钟后可见`, 'success');
-          localStorage.removeItem('blog_draft');
-          document.getElementById('titleInput').value = '';
-          document.getElementById('bodyInput').value = '';
-          categories = [];
-          tags = [];
-          renderTags('categories');
-          renderTags('tags');
-        } else {
-          const msg = data.message || '';
-          if (msg.includes('token') || res.status === 401 || res.status === 403) {
-            localStorage.removeItem('github_token');
-            GITHUB_TOKEN = null;
-            setStatus('Token 无效，请重新设置', 'error');
-          } else {
-            setStatus('发布失败: ' + msg, 'error');
-          }
-        }
-      } catch (err) {
-        if (err.name === 'TimeoutError' || err.name === 'AbortError') {
-          setStatus('发布超时，请稍后重试', 'error');
-        } else {
-          setStatus('发布出错: ' + (err.message || err), 'error');
-        }
+    if (result.ok) {
+      setStatus('✅ 发布成功！1-2 分钟后可见', 'success');
+      localStorage.removeItem('blog_draft');
+      document.getElementById('titleInput').value = '';
+      document.getElementById('bodyInput').value = '';
+      categories = []; tags = [];
+      renderTags('categories'); renderTags('tags');
+    } else {
+      const msg = result.data && result.data.message || '';
+      if (result.status === 401 || result.status === 403 || msg.includes('token')) {
+        localStorage.removeItem('github_token');
+        GITHUB_TOKEN = ***
+        setStatus('Token 无效，请重新设置', 'error');
+      } else {
+        setStatus('发布失败: ' + msg, 'error');
       }
     }
+  } catch(err) {
+    setStatus('发布出错: ' + err.message, 'error');
+  }
+}
 
-    function setStatus(text, type) {
-      const el = document.getElementById('status');
-      el.textContent = text;
-      el.className = type || '';
-    }
-  </script>
+function setStatus(text, type) {
+  const el = document.getElementById('status');
+  el.textContent = text;
+  el.className = type || '';
+}
+</script>
 </body>
 </html>
