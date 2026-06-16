@@ -86,12 +86,18 @@
     <input type="text" id="titleInput" placeholder="文章标题" />
     <input type="text" id="dateInput" placeholder="日期 (2026-06-16)" />
     <div class="tag-input">
-      <input type="text" id="catInput" placeholder="分类" />
+      <input type="text" id="catInput" placeholder="分类" list="catList" onkeydown="if(event.key==='Enter'){addTag('categories');event.preventDefault();}" />
+      <datalist id="catList">
+        <option value="日常"><option value="技术"><option value="摄影"><option value="情感"><option value="碎碎念"><option value="生活">
+      </datalist>
       <button onclick="addTag('categories')" style="padding:8px 12px;background:#eee;border:1px solid #ddd;border-radius:4px;cursor:pointer;">+</button>
       <div id="categoryTags"></div>
     </div>
     <div class="tag-input">
-      <input type="text" id="tagInput" placeholder="标签" />
+      <input type="text" id="tagInput" placeholder="标签" list="tagList" onkeydown="if(event.key==='Enter'){addTag('tags');event.preventDefault();}" />
+      <datalist id="tagList">
+        <option value="开始"><option value="随笔"><option value="摄影"><option value="日常">
+      </datalist>
       <button onclick="addTag('tags')" style="padding:8px 12px;background:#eee;border:1px solid #ddd;border-radius:4px;cursor:pointer;">+</button>
       <div id="tagTags"></div>
     </div>
