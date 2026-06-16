@@ -274,19 +274,20 @@ async function uploadImage(input) {
       r.readAsDataURL(file);
     });
 
-    const ts = Date.now();
+    // 用短随机 ID 替代长时间戳，减少文字区占用
+    const shortId = Math.random().toString(36).slice(2, 8);
     const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
-    const path = `assets/uploads/${ts}.${ext}`;
+    const path = `assets/uploads/${shortId}.${ext}`;
 
     const result = await ghRequest('PUT', path, { message: `upload ${path}`, content: base64 });
 
     if (result.ok) {
-      const md = `![${file.name.replace(/\.[^.]+$/, '')}](/assets/uploads/${ts}.${ext})`;
+      const md = `![图](/assets/uploads/${shortId}.${ext})`;
       const ta = document.getElementById('bodyInput');
       const pos = ta.selectionStart;
       ta.value = ta.value.slice(0, pos) + md + '\n' + ta.value.slice(pos);
       // 用 blob URL 映射，预览区实时渲染
-      UPLOADED_BLOBS[`/assets/uploads/${ts}.${ext}`] = URL.createObjectURL(file);
+      UPLOADED_BLOBS[`/assets/uploads/${shortId}.${ext}`] = URL.createObjectURL(file);
       updatePreview();
       setStatus('✅ 图片已插入', 'success');
     } else {
