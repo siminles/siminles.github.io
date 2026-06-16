@@ -261,20 +261,16 @@ async function uploadImage(input) {
   const file = input.files[0];
   if (!file) { input.value = ''; return; }
 
-  if (!GITHUB_TOKEN) {
-    showTokenDialog(() => uploadImage(input));
-    return;
-  }
-
   if (file.size > 10 * 1024 * 1024) {
     setStatus('图片太大，请控制在 10MB 以内', 'error');
     input.value = '';
     return;
   }
 
-  setStatus('正在上传图片...', '');
+  setStatus('正在读取图片...', '');
 
   try {
+    // 只读取为 base64，存储在内存里，不提交到 GitHub
     const base64 = await new Promise((resolve, reject) => {
       const r = new FileReader();
       r.onload = () => resolve(r.result.split(',')[1]);
@@ -282,35 +278,24 @@ async function uploadImage(input) {
       r.readAsDataURL(file);
     });
 
-    // 用短随机 ID，存放路径也缩短
     const shortId = Math.random().toString(36).slice(2, 8);
     const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
-    const path = `u/${shortId}.${ext}`;
 
-    const result = await ghRequest('PUT', path, { message: `upload ${path}`, content: base64 });
-
-    if (result.ok) {
-      // 只在文本框插入一个 ⏏ 标记（6 个字符），而不是整个链接
-      const marker = `⏏${shortId}`;
-      const ta = document.getElementById('bodyInput');
-      const pos = ta.selectionStart;
-      ta.value = ta.value.slice(0, pos) + marker + '\n' + ta.value.slice(pos);
-      // 存 blob 用于预览
-      UPLOADS[shortId] = { blobUrl: URL.createObjectURL(file), ext: ext };
-      updatePreview();
-      setStatus('✅ 图片已插入', 'success');
-    } else {
-      const msg = result.data && result.data.message || '';
-      if (result.status === 401 || result.status === 403 || msg.includes('token')) {
-        localStorage.removeItem('github_token');
-        GITHUB_TOKEN = null;
-        setStatus('Token 无效，请重新设置', 'error');
-      } else {
-        setStatus('上传失败: ' + msg, 'error');
-      }
-    }
+    // 只在文本框插入 ⏏ 标记，不上传
+    const marker = `⏏${shortId}`;
+    const ta = document.getElementById('bodyInput');
+    const pos = ta.selectionStart;
+    ta.value = ta.value.slice(0, pos) + marker + '\n' + ta.value.slice(pos);
+    // 存本地：base64 + blob + ext
+    UPLOADS[shortId] = {
+      base64: base64,
+      blobUrl: URL.createObjectURL(file),
+      ext: ext
+    };
+    updatePreview();
+    setStatus('✅ 图片已插入（发布时才上传）', 'success');
   } catch(err) {
-    setStatus('上传出错: ' + err.message, 'error');
+    setStatus('读取失败: ' + err.message, 'error');
   }
   input.value = '';
 }
@@ -321,6 +306,22 @@ async function publishPost() {
   const body = document.getElementById('bodyInput').value.trim();
   if (!title || !body) { setStatus('标题和正文不能为空', 'error'); return; }
   if (!GITHUB_TOKEN) { showTokenDialog(() => publishPost()); return; }
+
+  // 先上传所有未上传的图片
+  const toUpload = Object.keys(UPLOADS).filter(sid => UPLOADS[sid].base64 && !UPLOADS[sid].uploaded);
+  if (toUpload.length > 0) {
+    setStatus(`正在上传 ${toUpload.length} 张图片...`, '');
+    for (const sid of toUpload) {
+      const u = UPLOADS[sid];
+      const path = `u/${sid}.${u.ext}`;
+      try {
+        const r = await ghRequest('PUT', path, { message: `upload ${path}`, content: u.base64 });
+        if (r.ok) { u.uploaded = true; delete u.base64; /* 清掉 base64 释放内存 */ }
+        else { setStatus('图片上传失败: ' + (r.data && r.data.message || '未知'), 'error'); return; }
+      } catch(e) { setStatus('图片上传出错: ' + e.message, 'error'); return; }
+    }
+    setStatus('图片已上传，正在发布...', '');
+  }
 
   const dateStr = document.getElementById('dateInput').value.trim()
     || (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })();
@@ -350,7 +351,7 @@ async function publishPost() {
       localStorage.removeItem('blog_draft');
       document.getElementById('titleInput').value = '';
       document.getElementById('bodyInput').value = '';
-      categories = []; tags = [];
+      categories = []; tags = []; UPLOADS = {};
       renderTags('categories'); renderTags('tags');
     } else {
       const msg = result.data && result.data.message || '';
