@@ -290,7 +290,7 @@
       if (!file) { input.value = ''; return; }
 
       if (!GITHUB_TOKEN) {
-        showTokenDialog(() => { input.value = ''; uploadImage(input); });
+        showTokenDialog(() => uploadImage(input));
         return;
       }
 
@@ -325,6 +325,8 @@
           headers: {
             'Authorization': `Bearer ${GITHUB_TOKEN}`,
             'Content-Type': 'application/json',
+            'User-Agent': 'simin-blog/1.0',
+            'Accept': 'application/vnd.github.v3+json'
           },
           body: JSON.stringify({ message: `upload ${path}`, content: base64 }),
           signal: AbortSignal.timeout(30000)
@@ -397,6 +399,8 @@
           headers: {
             'Authorization': `Bearer ${GITHUB_TOKEN}`,
             'Content-Type': 'application/json',
+            'User-Agent': 'simin-blog/1.0',
+            'Accept': 'application/vnd.github.v3+json'
           },
           body: JSON.stringify({ message: `新文章: ${title}`, content: base64 }),
           signal: AbortSignal.timeout(30000)
