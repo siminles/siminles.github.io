@@ -317,34 +317,22 @@
 
         // 优先走本地代理（局域网），失败则直连
         const proxyUrl = `http://192.168.8.133:18790/upload`;
-        let res, data;
+        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+        const path = `assets/uploads/${ts}.${ext}`;
 
-        try {
-          res = await fetch(proxyUrl, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ path, content: base64 }),
-            signal: AbortSignal.timeout(8000)
-          });
-          data = await proxyRes.json();
-          if (!proxyRes.ok) throw new Error(data.error || 'proxy_error');
-          res = { ok: true };
-        } catch(e) {
-          // 代理不可用，降级到直连
-          const directRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
-            method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${GITHUB_TOKEN}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ message: `upload ${path}`, content: base64 }),
-            signal: AbortSignal.timeout(30000)
-          });
-          data = await directRes.json();
-          res = directRes;
-        }
+        const directRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURIComponent(path)}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${GITHUB_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: `upload ${path}`, content: base64 }),
+          signal: AbortSignal.timeout(30000)
+        });
+        const data = await directRes.json();
+        const res = directRes;
 
-        if (res.ok && (data.content || data.commit)) {
+        if (res.ok) {
           const md = `![${file.name.replace(/\.[^.]+$/, '')}](/assets/uploads/${ts}.${ext})`;
           const ta = document.getElementById('bodyInput');
           const pos = ta.selectionStart;
@@ -403,32 +391,18 @@
 
       try {
         const base64 = btoa(unescape(encodeURIComponent(content)));
-        const proxyUrl = `http://192.168.8.133:18790/publish`;
-        let res, data;
 
-        try {
-          const proxyRes = await fetch(proxyUrl, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filename, message: `新文章: ${title}`, content: base64 }),
-            signal: AbortSignal.timeout(8000)
-          });
-          data = await proxyRes.json();
-          if (!proxyRes.ok) throw new Error(data.error || 'proxy_error');
-          res = { ok: true };
-        } catch(e) {
-          const directRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURIComponent(filename)}`, {
-            method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${GITHUB_TOKEN}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ message: `新文章: ${title}`, content: base64 }),
-            signal: AbortSignal.timeout(30000)
-          });
-          data = await directRes.json();
-          res = directRes;
-        }
+        const directRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURIComponent(filename)}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${GITHUB_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: `新文章: ${title}`, content: base64 }),
+          signal: AbortSignal.timeout(30000)
+        });
+        const data = await directRes.json();
+        const res = directRes;
 
         if (res.ok) {
           setStatus(`✅ 发布成功！1-2 分钟后可见`, 'success');
