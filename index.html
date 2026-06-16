@@ -4,15 +4,36 @@ title: 首页
 ---
 
 <ul class="post-list">
-  {% for post in site.posts %}
+  {% for post in paginator.posts %}
   <li>
     <a href="{{ post.url | relative_url }}">
       <h2>{{ post.title }}</h2>
-      <span class="post-meta">{{ post.date | date: "%Y 年 %m 月 %d 日" }}</span>
+      <div class="post-meta">
+        <time>{{ post.date | date: "%Y 年 %m 月 %d 日" }}</time>
+        {% if post.categories.size > 0 %}
+        <span class="inline-tags">
+          {% for cat in post.categories %}
+          <span class="inline-tag">{{ cat }}</span>
+          {% endfor %}
+        </span>
+        {% endif %}
+      </div>
       {% if post.excerpt %}
-      <p class="post-excerpt">{{ post.excerpt | strip_html | truncate: 120 }}</p>
+      <p class="post-excerpt">{{ post.excerpt | strip_html | truncate: 150 }}</p>
       {% endif %}
     </a>
   </li>
   {% endfor %}
 </ul>
+
+{% if paginator.total_pages > 1 %}
+<div class="pagination">
+  {% if paginator.previous_page %}
+  <a href="{{ paginator.previous_page_path | relative_url }}" class="pagination-prev">← 上一页</a>
+  {% endif %}
+  <span class="pagination-info">{{ paginator.page }} / {{ paginator.total_pages }}</span>
+  {% if paginator.next_page %}
+  <a href="{{ paginator.next_page_path | relative_url }}" class="pagination-next">下一页 →</a>
+  {% endif %}
+</div>
+{% endif %}

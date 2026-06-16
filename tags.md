@@ -1,0 +1,17 @@
+---
+layout: default
+title: 标签
+---
+
+<h1>标签</h1>
+
+{% assign tags_list = site.tags | sort %}
+<div class="tag-cloud">
+{% for tag in tags_list %}
+  {% assign size = tag[1].size | times: 1.0 %}
+  {% assign font_size = size | divided_by: 5 | plus: 0.8 %}
+  <a href="{{ "/tag/" | append: tag[0] | relative_url }}" style="font-size: {{ font_size }}rem">
+    #{{ tag[0] }} <span class="count">({{ tag[1].size }})</span>
+  </a>
+{% endfor %}
+</div>

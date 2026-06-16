@@ -1,0 +1,17 @@
+---
+layout: default
+title: 分类
+---
+
+<h1>分类</h1>
+
+{% assign categories_list = site.categories | sort %}
+<ul class="taxonomy-list">
+{% for category in categories_list %}
+  <li>
+    <a href="{{ "/category/" | append: category[0] | relative_url }}">
+      {{ category[0] }} <span class="count">({{ category[1].size }})</span>
+    </a>
+  </li>
+{% endfor %}
+</ul>

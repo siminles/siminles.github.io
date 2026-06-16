@@ -8,6 +8,7 @@ theme: null
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+  - jekyll-archives
 
 # 构建
 permalink: /:year/:month/:title/
@@ -17,8 +18,27 @@ markdown: kramdown
 paginate: 10
 paginate_path: "/page/:num/"
 
+# 分类 & 标签 归档
+jekyll-archives:
+  enabled:
+    - categories
+    - tags
+  layouts:
+    category: category_archive
+    tag: tag_archive
+  permalinks:
+    category: /category/:name/
+    tag: /tag/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      comments: true
+
 # 社交
-twitter_username:
 github_username: siminles
 
 # 域名

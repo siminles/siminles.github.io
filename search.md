@@ -1,0 +1,56 @@
+---
+layout: default
+title: 搜索
+---
+
+<h1>搜索</h1>
+
+<input type="text" id="searchInput" placeholder="输入关键词搜索..." class="search-input">
+<div id="searchResults" class="search-results"></div>
+
+<script>
+  // 预加载所有文章数据
+  const posts = [
+    {% for post in site.posts %}
+    {
+      title: {{ post.title | jsonify }},
+      url: "{{ post.url | relative_url }}",
+      date: "{{ post.date | date: '%Y 年 %m 月 %d 日' }}",
+      excerpt: {{ post.excerpt | strip_html | truncate: 200 | jsonify }}
+    }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ];
+
+  const input = document.getElementById('searchInput');
+  const results = document.getElementById('searchResults');
+
+  input.addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    results.innerHTML = '';
+
+    if (!q) return;
+
+    const matches = posts.filter(p => {
+      return p.title.toLowerCase().includes(q) ||
+             (p.excerpt && p.excerpt.toLowerCase().includes(q));
+    });
+
+    if (matches.length === 0) {
+      results.innerHTML = '<p class="no-results">没有找到匹配的文章</p>';
+      return;
+    }
+
+    matches.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'search-item';
+      div.innerHTML = `
+        <a href="${p.url}">
+          <div class="search-item-title">${p.title}</div>
+          <div class="search-item-meta">${p.date}</div>
+          <div class="search-item-excerpt">${p.excerpt || ''}</div>
+        </a>
+      `;
+      results.appendChild(div);
+    });
+  });
+</script>

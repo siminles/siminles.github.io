@@ -1,0 +1,23 @@
+---
+layout: default
+title: 归档
+---
+
+<h1>归档</h1>
+
+{% assign posts_by_year = site.posts | group_by_exp: "post", "post.date | date: '%Y'" %}
+{% for year_group in posts_by_year %}
+  <h2 class="archive-year">{{ year_group.name }}</h2>
+  {% assign posts_by_month = year_group.items | group_by_exp: "post", "post.date | date: '%m 月'" %}
+  {% for month_group in posts_by_month %}
+    <h3 class="archive-month">{{ month_group.name }}</h3>
+    <ul class="archive-list">
+      {% for post in month_group.items %}
+      <li>
+        <time>{{ post.date | date: "%m-%d" }}</time>
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+{% endfor %}
