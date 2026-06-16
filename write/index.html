@@ -168,12 +168,12 @@
   </div>
 
   <script>
-    // ============ 配置 ============
-    // 密码：你自己设，改下面这行
-    const BLOG_PASSWORD = 'simin1024';
+    // ============ 密码哈希（不存明文！）============
+    // 默认 'simin1024' 的 SHA-256 哈希
+    const PASSWORD_HASH = '1b4f0e9851971998e732078544c96b36c3d01cedf7caa332359d6f1d83567054';
 
-    // GitHub Token（我先让你配，实际使用时配一个只写你博客仓库的 fine-grained token）
-    let GITHUB_TOKEN = null;
+    // GitHub Token（不写在代码里！第一次使用时输入，存在浏览器本地）
+    let GITHUB_TOKEN = localStorage.getItem('github_token') || null;
     const GITHUB_REPO = 'siminles/siminles.github.io';
     const GITHUB_OWNER = 'siminles';
 
@@ -181,10 +181,17 @@
     let categories = [];
     let tags = [];
 
-    // ============ 登录 ============
-    function handleLogin() {
+    // ============ 登录（SHA-256 验证）============
+    async function sha256(str) {
+      const buf = new TextEncoder().encode(str);
+      const hash = await crypto.subtle.digest('SHA-256', buf);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+
+    async function handleLogin() {
       const pw = document.getElementById('passwordInput').value;
-      if (pw === BLOG_PASSWORD) {
+      const hash = await sha256(pw);
+      if (hash === PASSWORD_HASH) {
         document.getElementById('loginBox').style.display = 'none';
         document.getElementById('editorBox').style.display = 'block';
         document.getElementById('loginError').style.display = 'none';
@@ -198,6 +205,17 @@
     document.getElementById('passwordInput').addEventListener('keydown', e => {
       if (e.key === 'Enter') handleLogin();
     });
+
+    // ============ Token 管理 ============
+    function showTokenDialog(callback) {
+      const token = prompt('请输入 GitHub Token（首次使用需要）\nToken 将保存在浏览器本地，不会上传到服务器');
+      if (token && token.trim()) {
+        const t = token.trim();
+        localStorage.setItem('github_token', t);
+        GITHUB_TOKEN = t;
+        callback(t);
+      }
+    }
 
     // ============ 标签管理 ============
     function addTag(type) {
@@ -288,8 +306,20 @@
       }
 
       if (!GITHUB_TOKEN) {
-        GITHUB_TOKEN = prompt('请输入 GitHub Token（首次使用需要）：');
-        if (!GITHUB_TOKEN) return;
+        showTokenDialog(async token => {
+          if (token) await doPublish(title, body);
+        });
+        return;
+      }
+      await doPublish(title, body);
+    }
+
+    async function doPublish(title, body) {
+      if (!GITHUB_TOKEN) {
+        showTokenDialog(async token => {
+          if (token) await doPublish(title, body);
+        });
+        return;
       }
 
       const dateStr = document.getElementById('dateInput').value.trim() || new Date().toISOString().split('T')[0];
