@@ -39,12 +39,12 @@
       font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;
     }
     .tag-item .remove { cursor: pointer; color: #b85c5c; font-weight: bold; }
-    .editor-area { display: flex; gap: 16px; min-height: 400px; }
+    .editor-area { display: flex; gap: 16px; min-height: 500px; }
     .editor-area textarea {
       flex: 1; padding: 16px; border: 1px solid #ddd; border-radius: 6px;
       font-size: 0.95rem; line-height: 1.7;
       font-family: "SF Mono", "Fira Code", "Courier New", monospace;
-      resize: vertical; outline: none;
+      min-height: 40vh; resize: vertical; outline: none;
     }
     .editor-area textarea:focus { border-color: #b85c5c; }
     .preview-panel {
@@ -65,7 +65,7 @@
     #status { font-size: 0.85rem; color: #888; margin-top: 8px; }
     #status.success { color: #4caf50; }
     #status.error { color: #b85c5c; }
-    @media (max-width: 700px) { .editor-area { flex-direction: column; } }
+@media (max-width: 700px) { .editor-area { flex-direction: column; } .editor-area textarea { min-height: 45vh; } .preview-panel { max-height: 35vh; } }
   </style>
 </head>
 <body>
