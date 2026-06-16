@@ -35,9 +35,12 @@
 
   <footer class="site-footer">
     <div class="container">
-      <p>&copy; {{ site.time | date: "%Y" }} {{ site.author }} · 用 <a href="https://jekyllrb.com" target="_blank">Jekyll</a> 搭建</p>
+      <p>&copy; {{ site.time | date: "%Y" }} {{ site.author }} · 用 <a href="https://jekyllrb.com" target="_blank">Jekyll</a> 搭建 · <a href="{{ "/write/" | relative_url }}" style="color:var(--accent)">写文章</a></p>
     </div>
   </footer>
+
+  <!-- 浮动写文章按钮 -->
+  <a href="{{ "/write/" | relative_url }}" class="write-fab" title="写文章">✏️</a>
 
   <script>
     // 深色模式切换
