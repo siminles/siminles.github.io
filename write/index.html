@@ -276,6 +276,10 @@ async function uploadImage(input) {
       const ta = document.getElementById('bodyInput');
       const pos = ta.selectionStart;
       ta.value = ta.value.slice(0, pos) + md + '\n' + ta.value.slice(pos);
+      // 用本地 blob 立即显示预览（不等待部署）
+      const pv = document.getElementById('previewPanel');
+      const blobUrl = URL.createObjectURL(file);
+      pv.innerHTML += `<img src="${blobUrl}" alt="${file.name}" style="max-width:100%;margin:8px 0;">`;
       updatePreview();
       setStatus('✅ 图片已插入', 'success');
     } else {
