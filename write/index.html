@@ -113,6 +113,8 @@
     .btn-publish:hover { background: #a04a4a; }
     .btn-save { background: #eee; color: #333; }
     .btn-save:hover { background: #ddd; }
+    .btn-upload { background: #eee; color: #333; }
+    .btn-upload:hover { background: #ddd; }
     #status { font-size: 0.85rem; color: #888; margin-top: 8px; }
     #status.success { color: #4caf50; }
     #status.error { color: #b85c5c; }
@@ -159,6 +161,8 @@
       </div>
 
       <div class="actions">
+        <button class="btn-upload" onclick="document.getElementById('imageInput').click()">🖼️ 上传图片</button>
+        <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="uploadImage(this)">
         <button class="btn-save" onclick="saveDraft()">保存草稿</button>
         <button class="btn-publish" onclick="publishPost()">发布</button>
       </div>
@@ -294,6 +298,73 @@
       renderTags('categories');
       renderTags('tags');
       updatePreview();
+    }
+
+    // ============ 图片上传 ============
+    async function uploadImage(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      if (!GITHUB_TOKEN) {
+        showTokenDialog(() => uploadImage(input));
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        setStatus('图片太大，请控制在 10MB 以内', 'error');
+        input.value = '';
+        return;
+      }
+
+      setStatus('正在上传图片...', '');
+
+      try {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onload = async function() {
+          const base64 = reader.result.split(',')[1];
+          const timestamp = Date.now();
+          const ext = file.name.split('.').pop().toLowerCase();
+          const filename = `assets/uploads/${timestamp}.${ext}`;
+
+          const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURIComponent(filename)}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${GITHUB_TOKEN}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              message: `上传图片 ${filename}`,
+              content: base64
+            })
+          });
+
+          const data = await resp.json();
+
+          if (resp.ok) {
+            const md = `![${file.name.replace(/\.[^.]+$/, '')}](/assets/uploads/${timestamp}.${ext})`;
+            const textarea = document.getElementById('bodyInput');
+            const cursorPos = textarea.selectionStart;
+            const text = textarea.value;
+            textarea.value = text.slice(0, cursorPos) + md + '\n' + text.slice(cursorPos);
+            updatePreview();
+            setStatus('✅ 图片已插入', 'success');
+          } else {
+            if ((data.message || '').includes('token')) {
+              localStorage.removeItem('github_token');
+              GITHUB_TOKEN = null;
+              setStatus('Token 无效，请重新输入', 'error');
+            } else {
+              setStatus('上传失败: ' + (data.message || '未知错误'), 'error');
+            }
+          }
+          input.value = '';
+        };
+      } catch (err) {
+        setStatus('上传错误: ' + err.message, 'error');
+        input.value = '';
+      }
     }
 
     // ============ 发布 ============
