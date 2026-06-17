@@ -57,7 +57,7 @@ a { color: inherit; }
   align-items: center;
 }
 
-.header-left { flex-shrink: 0; overflow: visible; }
+.header-left { flex-shrink: 0; }
 .header-right { display: flex; align-items: center; gap: 0.3rem; }
 
 .site-title {
@@ -556,16 +556,14 @@ html.dark .write-fab {
 
 .petal {
   position: absolute;
-  display: block;
-  top: 0;
-  left: 0;
-  width: 10px;
-  height: 20px;
+  top: 6px;
+  left: 10px;
+  width: 6px;
+  height: 14px;
   border-radius: 50% 50% 50% 50%;
-  background: rgba(255, 200, 200, 0.65);
-  border: 1px solid rgba(255, 150, 150, 0.4);
+  background: rgba(255, 245, 240, 0.65);
   pointer-events: none;
-  z-index: 10;
+  z-index: 5;
 }
 
 @keyframes petalFloat1 {
