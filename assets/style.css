@@ -374,14 +374,14 @@ a { color: inherit; }
 
 /* === Archive === */
 .archive-year {
-  font-size: 1.15rem;
+  font-size: 0.95rem;
   font-weight: 600;
   margin: 2rem 0 0.5rem;
   color: var(--accent);
 }
 
 .archive-month {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 500;
   margin: 0.8rem 0 0.5rem;
   color: var(--text-light);
@@ -410,7 +410,7 @@ a { color: inherit; }
 .archive-list a {
   text-decoration: none;
   color: var(--text);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .archive-list a:hover { color: var(--accent); }
@@ -428,7 +428,7 @@ a { color: inherit; }
 .taxonomy-list a {
   text-decoration: none;
   color: var(--text);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .taxonomy-list a:hover { color: var(--accent); }
