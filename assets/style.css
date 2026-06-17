@@ -80,13 +80,13 @@ a { color: inherit; }
   content: "";
   position: absolute;
   display: block;
-  top: -50px;
-  left: -50px;
+  top: -43px;
+  left: -45px;
   width: 60px;
   height: 48px;
   transform: rotate(-45deg);
   pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100'%3E%3Cellipse cx='60' cy='50' rx='32' ry='17' fill='none' stroke='%2388c098' stroke-width='1' opacity='0.5'/%3E%3Cpolygon points='60,27 66,33 60,39 54,33' fill='%233d8b4f'/%3E%3Cpolygon points='60,30 63,33 60,36 57,33' fill='%2358b86d'/%3E%3Cpath d='M74,32 Q80,28 82,22 Q76,28 70,30 Q72,36 74,32Z' fill='%23fff' opacity='0.9'/%3E%3Cpolygon points='85,33 91,39 85,45 79,39' fill='%238ecfa0'/%3E%3Cpolygon points='85,36 88,39 85,42 82,39' fill='%23b0deb8'/%3E%3Cpath d='M96,46 Q100,40 98,34 Q92,40 88,44 Q92,50 96,46Z' fill='%23fff' opacity='0.85'/%3E%3Cpolygon points='91,48 97,54 91,60 85,54' fill='%233d8b4f'/%3E%3Cpolygon points='91,51 94,54 91,57 88,54' fill='%2358b86d'/%3E%3Cpolygon points='74,59 80,65 74,71 68,65' fill='%238ecfa0'/%3E%3Cpolygon points='74,62 77,65 74,68 71,65' fill='%23b0deb8'/%3E%3Cpath d='M60,70 Q66,74 60,80 Q52,74 46,68 Q54,62 60,70Z' fill='%23fff' opacity='0.85'/%3E%3Cpolygon points='46,59 52,65 46,71 40,65' fill='%233d8b4f'/%3E%3Cpolygon points='46,62 49,65 46,68 43,65' fill='%2358b86d'/%3E%3Cpolygon points='29,48 35,54 29,60 23,54' fill='%238ecfa0'/%3E%3Cpolygon points='29,51 32,54 29,57 26,54' fill='%23b0deb8'/%3E%3Cpath d='M22,46 Q16,50 20,56 Q28,50 30,42 Q24,38 22,46Z' fill='%23fff' opacity='0.85'/%3E%3Cpolygon points='35,33 41,39 35,45 29,39' fill='%233d8b4f'/%3E%3Cpolygon points='35,36 38,39 35,42 32,39' fill='%2358b86d'/%3E%3C/svg%3E") no-repeat center/contain;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100'%3E%3Cellipse cx='60' cy='50' rx='32' ry='17' fill='none' stroke='%2388c098' stroke-width='1' opacity='0.5'/%3E%3Cpolygon points='60,23 65,33 60,43 55,33' fill='%233d8b4f'/%3E%3Cpolygon points='60,27 62,33 60,39 58,33' fill='%2358b86d'/%3E%3Cpolygon points='85,27 90,37 85,47 80,37' fill='%238ecfa0'/%3E%3Cpolygon points='85,31 87,37 85,43 83,37' fill='%23b0deb8'/%3E%3Cpolygon points='91,48 96,58 91,68 86,58' fill='%233d8b4f'/%3E%3Cpolygon points='91,52 93,58 91,64 89,58' fill='%2358b86d'/%3E%3Cpolygon points='74,59 79,69 74,79 69,69' fill='%238ecfa0'/%3E%3Cpolygon points='74,63 76,69 74,75 72,69' fill='%23b0deb8'/%3E%3Cpolygon points='46,59 51,69 46,79 41,69' fill='%233d8b4f'/%3E%3Cpolygon points='46,63 48,69 46,75 44,69' fill='%2358b86d'/%3E%3Cpolygon points='29,48 34,58 29,68 24,58' fill='%238ecfa0'/%3E%3Cpolygon points='29,52 31,58 29,64 27,58' fill='%23b0deb8'/%3E%3Cpolygon points='35,27 40,37 35,47 30,37' fill='%233d8b4f'/%3E%3Cpolygon points='35,31 37,37 35,43 33,37' fill='%2358b86d'/%3E%3C!-- 百合(4朵穿插宝石间) --%3E%3Cpath d='M74,26 Q82,22 80,16 Q72,22 66,26 Q70,32 74,26Z' fill='%23fff' opacity='0.9'/%3E%3Cpath d='M98,52 Q104,48 102,42 Q94,48 90,54 Q96,60 98,52Z' fill='%23fff' opacity='0.85'/%3E%3Cpath d='M60,76 Q66,82 60,88 Q52,80 46,74 Q54,66 60,76Z' fill='%23fff' opacity='0.85'/%3E%3Cpath d='M20,52 Q14,56 18,62 Q26,56 28,48 Q22,44 20,52Z' fill='%23fff' opacity='0.85'/%3E%3C/svg%3E") no-repeat center/contain;
 }
 
 @keyframes titleShimmer {
