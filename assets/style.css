@@ -77,16 +77,24 @@ a { color: inherit; }
 }
 
 .site-title::before {
+  display: none;
+}
+
+.title-first {
+  position: relative;
+  display: inline;
+}
+
+.title-first::before {
   content: "";
   position: absolute;
   display: block;
-  top: -30px;
-  left: -36px;
-  width: 54px;
-  height: 54px;
-  transform: rotate(-45deg);
+  top: -32px;
+  left: -10px;
+  width: 58px;
+  height: 44px;
   pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3C!-- 环 --%3E%3Cellipse cx='50' cy='50' rx='36' ry='36' fill='none' stroke='%2388c098' stroke-width='1' opacity='0.4'/%3E%3C!-- 宝石(起始角度偏移45°) --%3E%3Cpolygon points='72,19 75,28 72,37 69,28' fill='%233d8b4f'/%3E%3Cpolygon points='84,34 87,43 84,52 81,43' fill='%238ecfa0'/%3E%3Cpolygon points='84,56 87,65 84,74 81,65' fill='%2340a055'/%3E%3Cpolygon points='72,74 75,83 72,92 69,83' fill='%2395d4a5'/%3E%3Cpolygon points='52,82 55,91 52,100 49,91' fill='%233d8b4f'/%3E%3Cpolygon points='32,74 35,83 32,92 29,83' fill='%238ecfa0'/%3E%3Cpolygon points='18,56 21,65 18,74 15,65' fill='%2340a055'/%3E%3Cpolygon points='20,34 23,43 20,52 17,43' fill='%2395d4a5'/%3E%3Cpolygon points='34,19 37,28 34,37 31,28' fill='%233d8b4f'/%3E%3Cpolygon points='54,15 57,24 54,33 51,24' fill='%238ecfa0'/%3E%3C!-- 白百合穿插 --%3E%3Cpath d='M86,38 Q90,32 88,26 Q84,32 80,34 Q82,40 86,38Z' fill='%23fff' opacity='0.9'/%3E%3Cpath d='M78,36 Q80,38 82,36 Q80,32 78,36Z' fill='%23fafaf5' opacity='0.8'/%3E%3C!-- 百合2 --%3E%3Cpath d='M76,72 Q80,78 76,86 Q70,78 66,72 Q70,68 76,72Z' fill='%23fff' opacity='0.9'/%3E%3Cpath d='M72,72 Q74,74 76,72 Q72,68 72,72Z' fill='%23fafaf5' opacity='0.8'/%3E%3C!-- 百合3 --%3E%3Cpath d='M36,80 Q30,84 24,82 Q30,76 34,70 Q38,76 36,80Z' fill='%23fff' opacity='0.9'/%3E%3Cpath d='M32,76 Q34,78 36,80 Q32,84 32,76Z' fill='%23fafaf5' opacity='0.8'/%3E%3C!-- 百合4 --%3E%3Cpath d='M14,58 Q10,52 12,46 Q18,50 22,54 Q18,60 14,58Z' fill='%23fff' opacity='0.9'/%3E%3Cpath d='M16,54 Q14,52 14,58 Q18,56 16,54Z' fill='%23fafaf5' opacity='0.8'/%3E%3C!-- 百合5 --%3E%3Cpath d='M26,20 Q24,14 28,8 Q32,14 36,16 Q32,22 26,20Z' fill='%23fff' opacity='0.9'/%3E%3Cpath d='M30,16 Q28,14 26,20 Q30,18 30,16Z' fill='%23fafaf5' opacity='0.8'/%3E%3C/svg%3E") no-repeat center/contain;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 90'%3E%3C!-- 椭圆形环(倾斜视角) --%3E%3Cellipse cx='60' cy='45' rx='48' ry='28' fill='none' stroke='%2388c098' stroke-width='1.2' opacity='0.5'/%3E%3C!-- 宝石 --%3E%3Cpolygon points='60,17 63,24 60,31 57,24' fill='%233d8b4f'/%3E%3Cpolygon points='60,20 61.5,24 60,28 58.5,24' fill='%2358b86d'/%3E%3C!-- 百合穿插 --%3E%3Cpath d='M68,20 Q74,14 72,8 Q66,16 62,18 Q64,24 68,20Z' fill='%23fff' opacity='0.9'/%3E%3C!-- 宝石 --%3E%3Cpolygon points='82,24 85,31 82,38 79,31' fill='%238ecfa0'/%3E%3Cpolygon points='82,27 83.5,31 82,35 80.5,31' fill='%23b0deb8'/%3E%3C!-- 百合 --%3E%3Cpath d='M92,30 Q98,28 98,22 Q92,28 88,30 Q90,34 92,30Z' fill='%23fff' opacity='0.9'/%3E%3C!-- 宝石 --%3E%3Cpolygon points='98,40 101,47 98,54 95,47' fill='%2340a055'/%3E%3Cpolygon points='98,43 99.5,47 98,51 96.5,47' fill='%2358b86d'/%3E%3C!-- 宝石 --%3E%3Cpolygon points='94,56 97,63 94,70 91,63' fill='%238ecfa0'/%3E%3Cpolygon points='94,59 95.5,63 94,67 92.5,63' fill='%23b0deb8'/%3E%3C!-- 百合 --%3E%3Cpath d='M82,68 Q86,74 82,82 Q76,74 72,72 Q76,66 82,68Z' fill='%23fff' opacity='0.9'/%3E%3C!-- 宝石 --%3E%3Cpolygon points='62,73 65,80 62,87 59,80' fill='%233d8b4f'/%3E%3Cpolygon points='62,76 63.5,80 62,84 60.5,80' fill='%2358b86d'/%3E%3C!-- 宝石 --%3E%3Cpolygon points='36,68 39,75 36,82 33,75' fill='%238ecfa0'/%3E%3Cpolygon points='36,71 37.5,75 36,79 34.5,75' fill='%23b0deb8'/%3E%3C!-- 百合 --%3E%3Cpath d='M24,60 Q20,54 24,46 Q28,54 32,58 Q28,64 24,60Z' fill='%23fff' opacity='0.9'/%3E%3C!-- 宝石 --%3E%3Cpolygon points='16,44 19,51 16,58 13,51' fill='%2340a055'/%3E%3Cpolygon points='16,47 17.5,51 16,55 14.5,51' fill='%2358b86d'/%3E%3C!-- 宝石 --%3E%3Cpolygon points='18,28 21,35 18,42 15,35' fill='%238ecfa0'/%3E%3Cpolygon points='18,31 19.5,35 18,39 16.5,35' fill='%23b0deb8'/%3E%3C!-- 百合 --%3E%3Cpath d='M30,18 Q36,14 40,20 Q34,22 30,18Z' fill='%23fff' opacity='0.9'/%3E%3C!-- 宝石 --%3E%3Cpolygon points='42,18 45,25 42,32 39,25' fill='%233d8b4f'/%3E%3Cpolygon points='42,21 43.5,25 42,29 40.5,25' fill='%2358b86d'/%3E%3C/svg%3E") no-repeat center/contain;
 }
 
 @keyframes titleShimmer {

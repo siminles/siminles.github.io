@@ -13,7 +13,7 @@
   <header class="site-header">
     <div class="container">
       <div class="header-left">
-        <a href="{{ "/" | relative_url }}" class="site-title">{{ site.title }}</a>
+        <a href="{{ "/" | relative_url }}" class="site-title"><span class="title-first">{{ site.title | slice: 0 }}</span>{{ site.title | slice: 1, 100 }}</a>
       </div>
       <div class="header-right">
         <nav>
