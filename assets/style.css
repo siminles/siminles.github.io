@@ -581,9 +581,9 @@ html.dark .write-fab {
   100% { transform: translate(240px, 55px) rotate(1080deg); opacity: 0; }
 }
 
-.p1 { animation: petalFloat1 8s ease-in-out infinite backwards; width:1.5px; height:4px; }
-.p2 { animation: petalFloat2 10s ease-in-out infinite backwards; animation-delay: 2s; width:2px; height:5px; }
-.p3 { animation: petalFloat3 12s ease-in-out infinite backwards; animation-delay: 1.5s; width:2.5px; height:6px; }
-.p4 { animation: petalFloat1 13s ease-in-out infinite; animation-delay: 4s; width:1.8px; height:4.5px; }
-.p5 { animation: petalFloat2 15s ease-in-out infinite; animation-delay: 6s; width:2.8px; height:7px; }
-.p6 { animation: petalFloat3 17s ease-in-out infinite; animation-delay: 3s; width:3px; height:7.5px; }
+.p1 { animation: petalFloat1 16s ease-in-out infinite backwards; width:1.5px; height:4px; }
+.p2 { animation: petalFloat2 20s ease-in-out infinite backwards; animation-delay: 2s; width:2px; height:5px; }
+.p3 { animation: petalFloat3 24s ease-in-out infinite backwards; animation-delay: 1.5s; width:2.5px; height:6px; }
+.p4 { animation: petalFloat1 26s ease-in-out infinite; animation-delay: 4s; width:1.8px; height:4.5px; }
+.p5 { animation: petalFloat2 30s ease-in-out infinite; animation-delay: 6s; width:2.8px; height:7px; }
+.p6 { animation: petalFloat3 34s ease-in-out infinite; animation-delay: 3s; width:3px; height:7.5px; }
