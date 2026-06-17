@@ -558,8 +558,9 @@ html.dark .write-fab {
   position: absolute;
   pointer-events: none;
   z-index: 5;
-  top: 10px;
+  top: 30px;
   left: 0;
+  opacity: 0;
   border-radius: 100% 0 75% 25% / 80% 20% 80% 20%;
   background: rgba(255, 230, 220, 0.65);
 }
@@ -580,9 +581,9 @@ html.dark .write-fab {
   100% { transform: translate(290px, 85px) rotate(1080deg); opacity: 0; }
 }
 
-.p1 { animation: petalFloat1 8s ease-in-out infinite; width:1.5px; height:4px; left:-2px; top:-8px; }
-.p2 { animation: petalFloat2 10s ease-in-out infinite; animation-delay: 2s; left:3px; top:-15px; width:2px; height:5px; }
-.p3 { animation: petalFloat3 12s ease-in-out infinite; animation-delay: 1.5s; left:-5px; top:-5px; width:2.5px; height:6px; }
+.p1 { animation: petalFloat1 8s ease-in-out infinite backwards; width:1.5px; height:4px; left:-2px; top:-8px; }
+.p2 { animation: petalFloat2 10s ease-in-out infinite backwards; animation-delay: 2s; left:3px; top:-15px; width:2px; height:5px; }
+.p3 { animation: petalFloat3 12s ease-in-out infinite backwards; animation-delay: 1.5s; left:-5px; top:-5px; width:2.5px; height:6px; }
 .p4 { animation: petalFloat1 13s ease-in-out infinite; animation-delay: 4s; left:2px; top:-20px; width:1.8px; height:4.5px; }
 .p5 { animation: petalFloat2 15s ease-in-out infinite; animation-delay: 6s; left:-4px; top:-12px; width:2.8px; height:7px; }
 .p6 { animation: petalFloat3 17s ease-in-out infinite; animation-delay: 3s; left:5px; top:-18px; width:3px; height:7.5px; }
