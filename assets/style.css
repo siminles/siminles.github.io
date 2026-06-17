@@ -79,13 +79,13 @@ a { color: inherit; }
 .site-title::before {
   content: "";
   position: absolute;
-  top: -28px;
-  left: -38px;
-  width: 52px;
-  height: 52px;
+  top: -36px;
+  left: -42px;
+  width: 58px;
+  height: 58px;
   transform: rotate(-45deg);
   pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3C!-- left petals --%3E%3Cellipse cx='24' cy='22' rx='8' ry='13' fill='%238ed69b' transform='rotate(-30 24 22)'/%3E%3Cellipse cx='16' cy='38' rx='7' ry='11' fill='%23b8e6c2' transform='rotate(-15 16 38)'/%3E%3Cellipse cx='18' cy='54' rx='6' ry='10' fill='%238ed69b' transform='rotate(5 18 54)'/%3E%3C!-- right petals --%3E%3Cellipse cx='56' cy='22' rx='8' ry='13' fill='%23b8e6c2' transform='rotate(30 56 22)'/%3E%3Cellipse cx='64' cy='38' rx='7' ry='11' fill='%238ed69b' transform='rotate(15 64 38)'/%3E%3Cellipse cx='62' cy='54' rx='6' ry='10' fill='%23b8e6c2' transform='rotate(-5 62 54)'/%3E%3C!-- diamonds --%3E%3Cpolygon points='40,8 46,22 40,36 34,22' fill='%233d8b4f'/%3E%3Cpolygon points='26,32 29,40 26,48 23,40' fill='%2368b878'/%3E%3Cpolygon points='54,32 57,40 54,48 51,40' fill='%2368b878'/%3E%3Cpolygon points='40,46 43,54 40,62 37,54' fill='%233d8b4f'/%3E%3Cpolygon points='28,56 30,62 28,68 26,62' fill='%237bc487'/%3E%3Cpolygon points='52,56 54,62 52,68 50,62' fill='%237bc487'/%3E%3C/svg%3E") no-repeat center/contain;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3C!-- 冠环弧线 --%3E%3Cpath d='M8,58 Q20,14 50,6 Q80,14 92,58' stroke='%23ddd' stroke-width='1' fill='none' opacity='0.5'/%3E%3C!-- 左缎带 --%3E%3Cpath d='M8,58 Q4,68 6,78' stroke='%234a8c5c' fill='none' stroke-width='2'/%3E%3Cpath d='M8,58 Q2,68 5,80' stroke='%233d7a4e' fill='none' stroke-width='1.5'/%3E%3C!-- 水晶1 深绿 --%3E%3Cpolygon points='14,38 19,28 24,38 19,48' fill='%232b6b3a' stroke='%23fff' stroke-width='0.8'/%3E%3Cpolygon points='19,28 19,38 24,38' fill='%233d8b4f'/%3E%3Cpolygon points='19,38 19,48 14,38' fill='%231a5c2e'/%3E%3C!-- 水晶2 浅绿 --%3E%3Cpolygon points='28,22 33,12 38,22 33,32' fill='%239bd4a8' stroke='%23fff' stroke-width='0.8'/%3E%3Cpolygon points='33,12 33,22 38,22' fill='%23b8e6c2'/%3E%3Cpolygon points='33,22 33,32 28,22' fill='%2380c491'/%3E%3C!-- 水晶3 翠绿 --%3E%3Cpolygon points='43,10 48,0 53,10 48,20' fill='%2340a055' stroke='%23fff' stroke-width='0.8'/%3E%3Cpolygon points='48,0 48,10 53,10' fill='%2358b86d'/%3E%3Cpolygon points='48,10 48,20 43,10' fill='%23338a45'/%3E%3C!-- 水晶4 深绿 --%3E%3Cpolygon points='58,18 63,8 68,18 63,28' fill='%232b6b3a' stroke='%23fff' stroke-width='0.8'/%3E%3Cpolygon points='63,8 63,18 68,18' fill='%233d8b4f'/%3E%3Cpolygon points='63,18 63,28 58,18' fill='%231a5c2e'/%3E%3C!-- 水晶5 浅绿 --%3E%3Cpolygon points='74,32 79,22 84,32 79,42' fill='%239bd4a8' stroke='%23fff' stroke-width='0.8'/%3E%3Cpolygon points='79,22 79,32 84,32' fill='%23b8e6c2'/%3E%3Cpolygon points='79,32 79,42 74,32' fill='%2380c491'/%3E%3C!-- 水晶6 翡翠绿 --%3E%3Cpolygon points='88,50 93,40 98,50 93,60' fill='%2340a055' stroke='%23fff' stroke-width='0.8'/%3E%3Cpolygon points='93,40 93,50 98,50' fill='%2358b86d'/%3E%3Cpolygon points='93,50 93,60 88,50' fill='%23338a45'/%3E%3C!-- 右缎带 --%3E%3Cpath d='M88,50 Q96,58 93,72' stroke='%234a8c5c' fill='none' stroke-width='2'/%3E%3Cpath d='M88,50 Q98,60 94,75' stroke='%233d7a4e' fill='none' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat center/contain;
 }
 
 @keyframes titleShimmer {
