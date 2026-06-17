@@ -512,7 +512,7 @@ a { color: inherit; }
   .site-header .container { flex-direction: column; gap: 0.6rem; }
   .header-right { flex-wrap: wrap; justify-content: center; }
   .site-header nav a { margin: 0 0.4rem; }
-  .site-title::before { top: -35px; left: -35px; }
+  .site-title::before { top: -25px; left: -35px; }
 }
 
 @media (max-width: 500px) {
