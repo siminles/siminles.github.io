@@ -222,7 +222,7 @@ a { color: inherit; }
   color: #fff;
 }
 
-.post-content { line-height: 1; }
+.post-content { line-height: 1.5; }
 .post-content p { margin-bottom: 0.9rem; }
 
 .post-content h2 {
