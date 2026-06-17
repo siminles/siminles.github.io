@@ -31,7 +31,7 @@ body {
   font-family: -apple-system, "Noto Serif SC", "Source Han Serif SC", "STSong", "SimSun", Georgia, serif;
   color: var(--text);
   background: var(--bg);
-  line-height: 1.7;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   transition: background 0.3s, color 0.3s;
 }
@@ -176,7 +176,7 @@ a { color: inherit; }
   color: var(--text-light);
   font-size: 0.9rem;
   margin-top: 0.5rem;
-  line-height: 1.7;
+  line-height: 1.5;
 }
 
 /* === Single Post === */
@@ -363,7 +363,7 @@ a { color: inherit; }
 .search-item-excerpt {
   font-size: 0.85rem;
   color: var(--text-light);
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .no-results {
