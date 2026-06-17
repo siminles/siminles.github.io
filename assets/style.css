@@ -31,7 +31,7 @@ body {
   font-family: -apple-system, "Noto Serif SC", "Source Han Serif SC", "STSong", "SimSun", Georgia, serif;
   color: var(--text);
   background: var(--bg);
-  line-height: 1.9;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   transition: background 0.3s, color 0.3s;
 }
@@ -196,8 +196,8 @@ a { color: inherit; }
   color: #fff;
 }
 
-.post-content { line-height: 2; }
-.post-content p { margin-bottom: 1.2rem; }
+.post-content { line-height: 1.75; }
+.post-content p { margin-bottom: 0.9rem; }
 
 .post-content h2 {
   font-size: 1.3rem;
@@ -348,14 +348,14 @@ a { color: inherit; }
 
 /* === Archive === */
 .archive-year {
-  font-size: 1.4rem;
+  font-size: 1.15rem;
   font-weight: 600;
   margin: 2rem 0 0.5rem;
   color: var(--accent);
 }
 
 .archive-month {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 500;
   margin: 0.8rem 0 0.5rem;
   color: var(--text-light);
@@ -384,7 +384,7 @@ a { color: inherit; }
 .archive-list a {
   text-decoration: none;
   color: var(--text);
-  font-size: 0.92rem;
+  font-size: 0.85rem;
 }
 
 .archive-list a:hover { color: var(--accent); }
@@ -402,7 +402,7 @@ a { color: inherit; }
 .taxonomy-list a {
   text-decoration: none;
   color: var(--text);
-  font-size: 1.05rem;
+  font-size: 0.9rem;
 }
 
 .taxonomy-list a:hover { color: var(--accent); }
