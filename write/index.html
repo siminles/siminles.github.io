@@ -266,44 +266,71 @@ function ghRequest(method, path, body) {
   });
 }
 
+// ============ Canvas 图片压缩 ============
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const MAX = 2000;
+      let w = img.width, h = img.height;
+      if (Math.max(w, h) > MAX) {
+        const s = MAX / Math.max(w, h);
+        w = Math.round(w * s); h = Math.round(h * s);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      // 二分查找合适的质量值，目标 <500KB
+      let lo = 0.4, hi = 0.95, best = null;
+      for (let i = 0; i < 6; i++) {
+        const q = (lo + hi) / 2;
+        const b64 = canvas.toDataURL('image/jpeg', q).split(',')[1];
+        const bytes = b64.length * 0.75; // base64 → binary
+        if (bytes < 500 * 1024) { best = b64; lo = q; }
+        else { hi = q; }
+      }
+      if (!best) best = canvas.toDataURL('image/jpeg', 0.4).split(',')[1];
+      resolve({ base64: best, ext: 'jpg', origKB: Math.round(file.size/1024), newKB: Math.round(best.length*0.75/1024) });
+    };
+    img.onerror = () => reject(new Error('图片加载失败'));
+    img.src = url;
+  });
+}
+
 // ============ 图片上传（XHR 方式）============
 async function uploadImage(input) {
   const file = input.files[0];
   if (!file) { input.value = ''; return; }
 
-  if (file.size > 10 * 1024 * 1024) {
-    setStatus('图片太大，请控制在 10MB 以内', 'error');
+  if (file.size > 30 * 1024 * 1024) {
+    setStatus('图片太大，请控制在 30MB 以内', 'error');
     input.value = '';
     return;
   }
 
-  setStatus('正在读取图片...', '');
+  setStatus('正在压缩图片...', '');
 
   try {
-    // 只读取为 base64，存储在内存里，不提交到 GitHub
-    const base64 = await new Promise((resolve, reject) => {
-      const r = new FileReader();
-      r.onload = () => resolve(r.result.split(',')[1]);
-      r.onerror = () => reject(r.error);
-      r.readAsDataURL(file);
-    });
+    const compressed = await compressImage(file);
 
     const shortId = Math.random().toString(36).slice(2, 8);
-    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+    const ext = 'jpg'; // 压缩后统一 JPG
 
     // 只在文本框插入 ⏏ 标记，不上传
     const marker = `⏏${shortId}`;
     const ta = document.getElementById('bodyInput');
     const pos = ta.selectionStart;
     ta.value = ta.value.slice(0, pos) + marker + '\n' + ta.value.slice(pos);
-    // 存本地：base64 + blob + ext
     UPLOADS[shortId] = {
-      base64: base64,
-      blobUrl: URL.createObjectURL(file),
+      base64: compressed.base64,
       ext: ext
     };
     updatePreview();
-    setStatus('✅ 图片已插入（发布时才上传）', 'success');
+    setStatus(`✅ 已压缩 ${compressed.origKB}KB → ${compressed.newKB}KB（发布时才上传）`, 'success');
   } catch(err) {
     setStatus('读取失败: ' + err.message, 'error');
   }
