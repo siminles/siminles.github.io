@@ -66,6 +66,17 @@ a { color: inherit; }
   color: var(--text);
   text-decoration: none;
   letter-spacing: 0.05em;
+  background: linear-gradient(135deg, var(--accent), #c97a6a, var(--accent-light), #d4a07a);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: titleShimmer 4s ease-in-out infinite;
+}
+
+@keyframes titleShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .site-header nav a {
