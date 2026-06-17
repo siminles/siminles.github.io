@@ -24,7 +24,7 @@ jobs:
           bundler-cache: true
       - name: Build Jekyll site
         run: bundle exec jekyll build
-      - uses: actions/configure-pages@v4
-      - uses: actions/upload-pages-artifact@v3
-      - uses: actions/deploy-pages@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/deploy-pages@v5
         id: deployment
