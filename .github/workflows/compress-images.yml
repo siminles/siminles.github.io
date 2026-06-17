@@ -1,0 +1,36 @@
+name: 自动压缩图片
+
+on:
+  push:
+    paths:
+      - 'assets/**/*.jpg'
+      - 'assets/**/*.jpeg'
+      - 'assets/**/*.png'
+      - 'assets/**/*.webp'
+
+jobs:
+  compress:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      
+      - name: 安装 Pillow
+        run: pip install Pillow
+      
+      - name: 压缩图片
+        run: python3 _scripts/compress_images.py
+      
+      - name: 提交压缩结果
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/
+          git diff --staged --quiet || (git commit -m "自动压缩图片 [skip ci]" && git push)
