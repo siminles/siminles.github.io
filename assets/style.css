@@ -80,11 +80,11 @@ a { color: inherit; }
   content: "";
   position: absolute;
   display: block;
-  top: -38px;
-  left: -16px;
+  top: -50px;
+  left: -30px;
   width: 56px;
   height: 44px;
-  transform: rotate(-45deg);
+  transform: rotate(-45deg) scale(1.5);
   pointer-events: none;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100'%3E%3Cellipse cx='60' cy='50' rx='50' ry='30' fill='none' stroke='%2388c098' stroke-width='1.2' opacity='0.5'/%3E%3Cpolygon points='60,20 63,28 60,36 57,28' fill='%233d8b4f'/%3E%3Cpolygon points='60,23 61.5,28 60,33 58.5,28' fill='%2358b86d'/%3E%3Cpath d='M72,24 Q80,18 78,10 Q72,18 66,22 Q68,28 72,24Z' fill='%23fff' opacity='0.9'/%3E%3Cpolygon points='88,32 91,40 88,48 85,40' fill='%238ecfa0'/%3E%3Cpolygon points='88,35 89.5,40 88,45 86.5,40' fill='%23b0deb8'/%3E%3Cpath d='M98,44 Q102,38 98,32 Q92,38 90,44 Q94,50 98,44Z' fill='%23fff' opacity='0.9'/%3E%3Cpolygon points='94,56 97,64 94,72 91,64' fill='%2340a055'/%3E%3Cpolygon points='94,59 95.5,64 94,69 92.5,64' fill='%2358b86d'/%3E%3Cpath d='M78,72 Q82,80 76,86 Q70,78 66,72 Q72,66 78,72Z' fill='%23fff' opacity='0.9'/%3E%3Cpolygon points='52,72 55,80 52,88 49,80' fill='%238ecfa0'/%3E%3Cpolygon points='52,75 53.5,80 52,85 50.5,80' fill='%23b0deb8'/%3E%3Cpath d='M34,64 Q30,72 36,78 Q42,70 44,64 Q40,58 34,64Z' fill='%23fff' opacity='0.9'/%3E%3Cpolygon points='22,52 25,60 22,68 19,60' fill='%233d8b4f'/%3E%3Cpolygon points='22,55 23.5,60 22,65 20.5,60' fill='%2358b86d'/%3E%3Cpolygon points='20,32 23,40 20,48 17,40' fill='%238ecfa0'/%3E%3Cpolygon points='20,35 21.5,40 20,45 18.5,40' fill='%23b0deb8'/%3E%3Cpath d='M38,22 Q44,16 48,22 Q42,26 38,22Z' fill='%23fff' opacity='0.9'/%3E%3C/svg%3E") no-repeat center/contain;
 }
