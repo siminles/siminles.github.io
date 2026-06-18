@@ -493,7 +493,7 @@ function replaceSel(start, end, text) {
 // 包裹选区：在前后加标记
 function fmtWrap(before, after) {
   const s = getSel();
-  const txt = s.text || before === after ? '' : '文本';
+  const txt = s.text || (before === after ? '' : '文本');
   if (txt) {
     replaceSel(s.start, s.end, before + txt + after);
   } else {
