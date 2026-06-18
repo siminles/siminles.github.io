@@ -567,18 +567,18 @@ html.dark .write-fab {
 
 @keyframes petalFloat1 {
   0% { transform: translate(0, 0) rotate(0deg); opacity: 0.65; }
-  50% { transform: translate(140px, 40px) rotate(540deg); opacity: 0.65; }
-  100% { transform: translate(165px, 20px) rotate(1080deg); opacity: 0.65; }
+  50% { transform: translate(80px, 40px) rotate(540deg); opacity: 0.65; }
+  100% { transform: translate(165px, 20px) rotate(1080deg); opacity: 0; }
 }
 @keyframes petalFloat2 {
   0% { transform: translate(0, 0) rotate(0deg); opacity: 0.65; }
-  50% { transform: translate(130px, 50px) rotate(-360deg); opacity: 0.6; }
-  100% { transform: translate(155px, 30px) rotate(-720deg); opacity: 0.6; }
+  50% { transform: translate(75px, 50px) rotate(-360deg); opacity: 0.6; }
+  100% { transform: translate(155px, 30px) rotate(-720deg); opacity: 0; }
 }
 @keyframes petalFloat3 {
   0% { transform: translate(0, 0) rotate(0deg); opacity: 0.65; }
-  40% { transform: translate(120px, 38px) rotate(360deg); opacity: 0.65; }
-  100% { transform: translate(175px, 25px) rotate(1080deg); opacity: 0.65; }
+  40% { transform: translate(85px, 38px) rotate(360deg); opacity: 0.65; }
+  100% { transform: translate(175px, 25px) rotate(1080deg); opacity: 0; }
 }
 
 .p1 { animation: petalFloat1 12s ease-in-out infinite backwards; width:1.5px; height:4px; }
