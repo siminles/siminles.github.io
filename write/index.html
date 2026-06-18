@@ -55,7 +55,23 @@ permalink: /write/
       flex: 1; padding: 16px; border: 1px solid #ddd; border-radius: 6px;
       overflow-y: auto; line-height: 1.8; font-size: 0.95rem;
     }
-    .actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .fmt-bar {
+  display: flex; gap: 4px; margin-bottom: 10px; flex-wrap: wrap; align-items: center;
+  padding: 8px 12px; background: #f5f5f3; border: 1px solid #ddd; border-radius: 6px;
+}
+.fmt-bar button {
+  padding: 4px 10px; background: #fff; border: 1px solid #ccc; border-radius: 4px;
+  cursor: pointer; font-size: 0.85rem; line-height: 1.5; white-space: nowrap;
+}
+.fmt-bar button:hover { background: #e8e8e6; border-color: #b85c5c; }
+.fmt-bar button.active { background: #b85c5c; color: #fff; border-color: #b85c5c; }
+.fmt-bar select {
+  padding: 4px 6px; border: 1px solid #ccc; border-radius: 4px;
+  font-size: 0.8rem; background: #fff; cursor: pointer;
+}
+.fmt-bar .sep { width: 1px; height: 20px; background: #ccc; margin: 0 2px; }
+.fmt-bar .label { font-size: 0.75rem; color: #888; margin-right: 2px; }
+.actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
     .actions button {
       padding: 10px 24px; border: none; border-radius: 6px;
       font-size: 0.95rem; cursor: pointer;
@@ -105,6 +121,39 @@ permalink: /write/
       <button onclick="addTag('tags')" style="padding:8px 12px;background:#eee;border:1px solid #ddd;border-radius:4px;cursor:pointer;">+</button>
       <div id="tagTags"></div>
     </div>
+  </div>
+  <div class="fmt-bar" id="fmtBar">
+    <button onclick="fmtWrap('**','**')" title="粗体"><b>B</b></button>
+    <button onclick="fmtWrap('*','*')" title="斜体"><i>I</i></button>
+    <button onclick="fmtWrap('~~','~~')" title="删除线"><s>S</s></button>
+    <button onclick="fmtWrap('`','`')" title="行内代码"><code>code</code></button>
+    <span class="sep"></span>
+    <button onclick="fmtLine('# ')" title="标题1">H1</button>
+    <button onclick="fmtLine('## ')" title="标题2">H2</button>
+    <button onclick="fmtLine('### ')" title="标题3">H3</button>
+    <span class="sep"></span>
+    <button onclick="fmtLine('> ')" title="引用">❝</button>
+    <button onclick="fmtLine('- ')" title="列表">•</button>
+    <span class="sep"></span>
+    <button onclick="fmtWrap('[','](url)')" title="链接">🔗</button>
+    <button onclick="fmtImage()" title="插入图片">🖼</button>
+    <span class="sep"></span>
+    <span class="label">字号</span>
+    <select onchange="fmtFontSize(this.value);this.value=''" title="字号">
+      <option value="">—</option>
+      <option value="12px">小</option>
+      <option value="16px">中</option>
+      <option value="20px">大</option>
+      <option value="24px">特大</option>
+    </select>
+    <span class="label">字体</span>
+    <select onchange="fmtFontFamily(this.value);this.value=''" title="字体">
+      <option value="">—</option>
+      <option value="serif">衬线</option>
+      <option value="'PingFang SC',sans-serif">苹方</option>
+      <option value="'Noto Serif CJK SC',serif">宋体</option>
+      <option value="monospace">等宽</option>
+    </select>
   </div>
   <div class="editor-area">
     <textarea id="bodyInput" placeholder="正文（Markdown）" oninput="updatePreview()"></textarea>
@@ -403,6 +452,68 @@ async function publishPost() {
   } catch(err) {
     setStatus('发布出错: ' + err.message, 'error');
   }
+}
+
+// ============ 格式工具栏 ============
+function getTextarea() { return document.getElementById('bodyInput'); }
+
+// 获取选区或光标位置
+function getSel() {
+  const ta = getTextarea();
+  return { start: ta.selectionStart, end: ta.selectionEnd, text: ta.value.slice(ta.selectionStart, ta.selectionEnd) };
+}
+
+// 替换选区内容
+function replaceSel(start, end, text) {
+  const ta = getTextarea();
+  ta.value = ta.value.slice(0, start) + text + ta.value.slice(end);
+  ta.selectionStart = ta.selectionEnd = start + text.length;
+  ta.focus();
+  updatePreview();
+}
+
+// 包裹选区：在前后加标记
+function fmtWrap(before, after) {
+  const s = getSel();
+  const txt = s.text || before === after ? '' : '文本';
+  if (txt) {
+    replaceSel(s.start, s.end, before + txt + after);
+  } else {
+    replaceSel(s.start, s.end, before + after);
+  }
+}
+
+// 在行首插入前缀
+function fmtLine(prefix) {
+  const ta = getTextarea();
+  const start = ta.selectionStart;
+  // 找到当前行开头
+  const lines = ta.value.slice(0, start).split('\n');
+  const lineStart = start - lines[lines.length-1].length;
+  ta.value = ta.value.slice(0, lineStart) + prefix + ta.value.slice(lineStart);
+  ta.selectionStart = ta.selectionEnd = lineStart + prefix.length;
+  ta.focus();
+  updatePreview();
+}
+
+// 字号：用 HTML span
+function fmtFontSize(size) {
+  const s = getSel();
+  const txt = s.text || '文字';
+  replaceSel(s.start, s.end, `<span style="font-size:${size}">${txt}</span>`);
+}
+
+// 字体：用 HTML span
+function fmtFontFamily(family) {
+  const s = getSel();
+  const txt = s.text || '文字';
+  replaceSel(s.start, s.end, `<span style="font-family:${family}">${txt}</span>`);
+}
+
+// 插入图片标记
+function fmtImage() {
+  const s = getSel();
+  replaceSel(s.start, s.end, `![图片描述](图片URL)`);
 }
 
 function setStatus(text, type) {
