@@ -3,7 +3,7 @@ layout: none
 permalink: /write/
 ---
 <!doctype html>
-<html>
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,11 +12,9 @@ permalink: /write/
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-      background: #fafaf8;
-      color: #2c2c2c;
-      padding: 20px;
+      background: #fafaf8; color: #2c2c2c; padding: 20px;
     }
-    .container { max-width: 780px; margin: 0 auto; }
+    .container { max-width: 820px; margin: 0 auto; }
     #loginBox { max-width: 360px; margin: 80px auto; text-align: center; }
     #loginBox h1 { font-size: 1.4rem; margin-bottom: 1.5rem; }
     #loginBox input {
@@ -43,35 +41,42 @@ permalink: /write/
       font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;
     }
     .tag-item .remove { cursor: pointer; color: #b85c5c; font-weight: bold; }
-    .editor-area { display: flex; gap: 16px; min-height: 500px; }
-    .editor-area textarea {
-      flex: 1; padding: 16px; border: 1px solid #ddd; border-radius: 6px;
-      font-size: 0.95rem; line-height: 1.7;
-      font-family: "SF Mono", "Fira Code", "Courier New", monospace;
-      min-height: 40vh; resize: vertical; outline: none;
-    }
-    .editor-area textarea:focus { border-color: #b85c5c; }
-    .preview-panel {
-      flex: 1; padding: 16px; border: 1px solid #ddd; border-radius: 6px;
-      overflow-y: auto; line-height: 1.8; font-size: 0.95rem;
-    }
+    .editor-container { border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
+    .editor-container:focus-within { border-color: #b85c5c; }
     .fmt-bar {
-  display: flex; gap: 4px; margin-bottom: 10px; flex-wrap: wrap; align-items: center;
-  padding: 8px 12px; background: #f5f5f3; border: 1px solid #ddd; border-radius: 6px;
-}
-.fmt-bar button {
-  padding: 4px 10px; background: #fff; border: 1px solid #ccc; border-radius: 4px;
-  cursor: pointer; font-size: 0.85rem; line-height: 1.5; white-space: nowrap;
-}
-.fmt-bar button:hover { background: #e8e8e6; border-color: #b85c5c; }
-.fmt-bar button.active { background: #b85c5c; color: #fff; border-color: #b85c5c; }
-.fmt-bar select {
-  padding: 4px 6px; border: 1px solid #ccc; border-radius: 4px;
-  font-size: 0.8rem; background: #fff; cursor: pointer;
-}
-.fmt-bar .sep { width: 1px; height: 20px; background: #ccc; margin: 0 2px; }
-.fmt-bar .label { font-size: 0.75rem; color: #888; margin-right: 2px; }
-.actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+      display: flex; gap: 3px; padding: 8px 10px; background: #f5f5f3;
+      border-bottom: 1px solid #ddd; flex-wrap: wrap; align-items: center;
+    }
+    .fmt-bar button {
+      padding: 4px 10px; background: #fff; border: 1px solid #ccc; border-radius: 4px;
+      cursor: pointer; font-size: 0.85rem; line-height: 1.5; min-width: 32px;
+      transition: background 0.15s;
+    }
+    .fmt-bar button:hover { background: #e8e8e6; border-color: #b85c5c; }
+    .fmt-bar select {
+      padding: 4px 6px; border: 1px solid #ccc; border-radius: 4px;
+      font-size: 0.8rem; background: #fff; cursor: pointer;
+    }
+    .fmt-bar .sep { width: 1px; height: 20px; background: #ccc; margin: 0 3px; }
+    #editor {
+      padding: 16px; min-height: 45vh; outline: none; line-height: 1.8;
+      font-size: 0.95rem; overflow-y: auto;
+    }
+    #editor:empty::before {
+      content: attr(placeholder); color: #aaa;
+    }
+    #editor img { max-width: 100%; border-radius: 4px; }
+    #editor h1 { font-size: 1.6rem; margin: 0.6em 0 0.3em; }
+    #editor h2 { font-size: 1.35rem; margin: 0.5em 0 0.25em; }
+    #editor h3 { font-size: 1.15rem; margin: 0.4em 0 0.2em; }
+    #editor p { margin: 0 0 0.6em; }
+    #editor ul, #editor ol { padding-left: 1.5em; margin-bottom: 0.6em; }
+    #editor li { margin-bottom: 0.2em; }
+    #editor blockquote {
+      border-left: 3px solid #b85c5c; padding-left: 12px; color: #666;
+      margin: 0.5em 0;
+    }
+    .actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
     .actions button {
       padding: 10px 24px; border: none; border-radius: 6px;
       font-size: 0.95rem; cursor: pointer;
@@ -85,13 +90,15 @@ permalink: /write/
     #status { font-size: 0.85rem; color: #888; margin-top: 8px; }
     #status.success { color: #4caf50; }
     #status.error { color: #b85c5c; }
-@media (max-width: 700px) { .editor-area { flex-direction: column; } .editor-area textarea { min-height: 45vh; } .preview-panel { max-height: 35vh; } }
+    @media (max-width: 700px) {
+      .fmt-bar { gap: 2px; padding: 6px; }
+      .fmt-bar button { padding: 3px 7px; font-size: 0.78rem; }
+    }
   </style>
 </head>
 <body>
 <div class="container">
 
-<!-- 登录 -->
 <div id="loginBox">
   <h1>✏️ 写文章</h1>
   <p style="color:#888;font-size:0.85rem;margin-bottom:1.2rem;">输入密码进入后台</p>
@@ -100,7 +107,6 @@ permalink: /write/
   <button onclick="handleLogin()">进入后台</button>
 </div>
 
-<!-- 编辑器 -->
 <div id="editorBox">
   <div class="toolbar">
     <input type="text" id="titleInput" placeholder="文章标题" />
@@ -122,52 +128,51 @@ permalink: /write/
       <div id="tagTags"></div>
     </div>
   </div>
-  <div class="fmt-bar" id="fmtBar">
-    <button onclick="fmtWrap('**','**')" title="粗体"><b>B</b></button>
-    <button onclick="fmtWrap('*','*')" title="斜体"><i>I</i></button>
-    <button onclick="fmtWrap('~~','~~')" title="删除线"><s>S</s></button>
-    <button onclick="fmtWrap('`','`')" title="行内代码"><code>code</code></button>
-    <span class="sep"></span>
-    <button onclick="fmtLine('# ')" title="标题1">H1</button>
-    <button onclick="fmtLine('## ')" title="标题2">H2</button>
-    <button onclick="fmtLine('### ')" title="标题3">H3</button>
-    <span class="sep"></span>
-    <button onclick="fmtLine('> ')" title="引用">❝</button>
-    <button onclick="fmtLine('- ')" title="列表">•</button>
-    <span class="sep"></span>
-    <button onclick="fmtWrap('[','](url)')" title="链接">🔗</button>
-    <button onclick="fmtImage()" title="插入图片">🖼</button>
-    <span class="sep"></span>
-    <span class="label">字号</span>
-    <select onchange="fmtFontSize(this.value);this.value=''" title="字号">
-      <option value="">—</option>
-      <option value="12px">小</option>
-      <option value="16px">中</option>
-      <option value="20px">大</option>
-      <option value="24px">特大</option>
-    </select>
-    <span class="label">字体</span>
-    <select onchange="fmtFontFamily(this.value);this.value=''" title="字体">
-      <option value="">—</option>
-      <option value="serif">衬线</option>
-      <option value="'PingFang SC',sans-serif">苹方</option>
-      <option value="'Noto Serif CJK SC',serif">宋体</option>
-      <option value="monospace">等宽</option>
-    </select>
+
+  <div class="editor-container">
+    <div class="fmt-bar">
+      <button onclick="exec('bold')" title="粗体"><b>B</b></button>
+      <button onclick="exec('italic')" title="斜体"><i>I</i></button>
+      <button onclick="exec('underline')" title="下划线"><u>U</u></button>
+      <button onclick="exec('strikeThrough')" title="删除线"><s>S</s></button>
+      <span class="sep"></span>
+      <button onclick="execFormat('h1')" title="标题1">H1</button>
+      <button onclick="execFormat('h2')" title="标题2">H2</button>
+      <button onclick="execFormat('h3')" title="标题3">H3</button>
+      <span class="sep"></span>
+      <button onclick="exec('insertUnorderedList')" title="无序列表">•</button>
+      <button onclick="exec('insertOrderedList')" title="有序列表">1.</button>
+      <button onclick="exec('formatBlock','blockquote')" title="引用">❝</button>
+      <span class="sep"></span>
+      <button onclick="insertLink()" title="插入链接">🔗</button>
+      <span class="sep"></span>
+      <select onchange="applyFontSize(this.value);this.value=''" title="字号">
+        <option value="">字号</option>
+        <option value="14px">小(14)</option>
+        <option value="16px">中(16)</option>
+        <option value="20px">大(20)</option>
+        <option value="24px">特大(24)</option>
+        <option value="30px">超大(30)</option>
+      </select>
+      <select onchange="applyFontFamily(this.value);this.value=''" title="字体">
+        <option value="">字体</option>
+        <option value="'PingFang SC','Microsoft YaHei',sans-serif">默认</option>
+        <option value="'Noto Serif CJK SC','SimSun',serif">宋体</option>
+        <option value="'KaiTi','STKaiti',serif">楷体</option>
+        <option value="'Courier New',monospace">等宽</option>
+      </select>
+    </div>
+    <div id="editor" contenteditable="true" placeholder="在这里写文章…"></div>
   </div>
-  <div class="editor-area">
-    <textarea id="bodyInput" placeholder="正文（Markdown）" oninput="updatePreview()"></textarea>
-    <div class="preview-panel" id="previewPanel"><p style="color:#aaa;">预览区</p></div>
-  </div>
+
   <div class="actions">
     <button class="btn-upload" onclick="document.getElementById('imageInput').click()">🖼️ 上传图片</button>
-    <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="uploadImage(this)">
+    <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="uploadImage(this)" />
     <button class="btn-save" onclick="saveDraft()">保存草稿</button>
     <button class="btn-publish" onclick="publishPost()">发布</button>
   </div>
   <div id="status"></div>
 </div>
-
 </div>
 
 <script>
@@ -179,9 +184,7 @@ const GH_REPO = 'siminles.github.io';
 
 let categories = [];
 let tags = [];
-// 跟踪已上传图片的 blob URL，用于预览（避免空白期）
 let UPLOADED_BLOBS = {};
-// 图片仓库：{ shortId: { blobUrl, ext } }
 let UPLOADS = {};
 
 // ============ SHA-256 ============
@@ -238,75 +241,106 @@ function renderTags(t) {
   el.innerHTML = arr.map(x => `<span class="tag-item">${x} <span class="remove" onclick="removeTag('${t}','${x}')">×</span></span>`).join('');
 }
 
-// ============ 预览 ============
-function updatePreview() {
-  const body = document.getElementById('bodyInput').value;
-  const pv = document.getElementById('previewPanel');
-  if (!body.trim()) { pv.innerHTML = '<p style="color:#aaa;">预览区</p>'; return; }
+// ============ 编辑器命令 ============
+function exec(cmd, val) {
+  document.execCommand(cmd, false, val || null);
+  document.getElementById('editor').focus();
+}
 
-  // Protect HTML tags (e.g. <span>) so Markdown processing doesn't break them
-  const htmlTags = [];
-  let txt = body.replace(/<[^>]+>/g, function(m) {
-    htmlTags.push(m);
-    return '\x00HTML' + (htmlTags.length-1) + '\x00';
-  });
+function execFormat(tag) {
+  document.execCommand('formatBlock', false, tag);
+  document.getElementById('editor').focus();
+}
 
-  // Convert Markdown to HTML
-  txt = txt
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/~~(.+?)~~/g, '<del>$1</del>')
-    .replace(/`(.+?)`/g, '<code>$1</code>')
-    .replace(/^- (.+)$/gm, '<li>$1</li>')
-    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+function applyFontSize(size) {
+  wrapSelection('span', { 'font-size': size });
+}
 
-  // Image placeholders
-  txt = txt.replace(/⏏(\w{6})/g, function(m, sid) {
-    const u = UPLOADS[sid];
-    return u ? '<img src="' + u.blobUrl + '" style="max-width:100%">' : m;
-  });
-  txt = txt.replace(/!\[(.+?)\]\((.+?)\)/g, function(m, alt, src) {
-    const realSrc = UPLOADED_BLOBS[src] || src;
-    return '<img src="' + realSrc + '" alt="' + alt + '" style="max-width:100%">';
-  });
+function applyFontFamily(family) {
+  wrapSelection('span', { 'font-family': family });
+}
 
-  // Restore HTML tags
-  txt = txt.replace(/\x00HTML(\d+)\x00/g, function(m, idx) {
-    return htmlTags[parseInt(idx)] || m;
-  });
+function wrapSelection(tagName, styles) {
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+  const range = sel.getRangeAt(0);
+  const editor = document.getElementById('editor');
 
-  // Wrap paragraphs
-  txt = txt.replace(/\n{2,}/g, '</p><p>').replace(/\n/g, '<br>');
-  pv.innerHTML = '<p>' + txt + '</p>';
+  if (range.collapsed) {
+    // No selection: insert placeholder text wrapped in styled span
+    const span = document.createElement(tagName);
+    Object.assign(span.style, styles);
+    span.textContent = '文字';
+    range.insertNode(span);
+    sel.selectAllChildren(span);
+  } else if (range.commonAncestorContainer === editor ||
+             editor.contains(range.commonAncestorContainer)) {
+    // Selection inside editor: wrap with span
+    // First try surroundContents (works for simple text nodes)
+    try {
+      const span = document.createElement(tagName);
+      Object.assign(span.style, styles);
+      range.surroundContents(span);
+    } catch(e) {
+      // Complex selection: extract content, wrap, reinsert
+      const fragment = range.extractContents();
+      const span = document.createElement(tagName);
+      Object.assign(span.style, styles);
+      span.appendChild(fragment);
+      range.insertNode(span);
+    }
+  }
+  editor.focus();
+}
+
+function insertLink() {
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+  const url = prompt('链接地址:', 'https://');
+  if (!url) return;
+  const range = sel.getRangeAt(0);
+  const text = range.collapsed ? url : range.toString();
+  const a = document.createElement('a');
+  a.href = url;
+  a.textContent = text;
+  a.target = '_blank';
+  if (range.collapsed) {
+    range.insertNode(a);
+    sel.selectAllChildren(a);
+  } else {
+    try { range.surroundContents(a); } catch(e) {
+      const frag = range.extractContents();
+      a.appendChild(frag);
+      range.insertNode(a);
+    }
+  }
+  document.getElementById('editor').focus();
 }
 
 // ============ 草稿 ============
 function saveDraft() {
   try {
-    localStorage.setItem('blog_draft', JSON.stringify({
+    const ed = document.getElementById('editor');
+    localStorage.setItem('blog_draft_v2', JSON.stringify({
       title: document.getElementById('titleInput').value,
       date: document.getElementById('dateInput').value,
       categories, tags,
-      body: document.getElementById('bodyInput').value
+      html: ed.innerHTML
     }));
     setStatus('草稿已保存', 'success');
   } catch(e) {
-    setStatus('草稿保存失败：存储空间不足', 'error');
+    setStatus('草稿保存失败', 'error');
   }
 }
 function loadDraft() {
   try {
-    const d = JSON.parse(localStorage.getItem('blog_draft') || '{}');
+    const d = JSON.parse(localStorage.getItem('blog_draft_v2') || '{}');
     document.getElementById('titleInput').value = d.title || '';
     document.getElementById('dateInput').value = d.date || '';
-    document.getElementById('bodyInput').value = d.body || '';
     categories = d.categories || [];
     tags = d.tags || [];
     renderTags('categories'); renderTags('tags');
-    updatePreview();
+    if (d.html) document.getElementById('editor').innerHTML = d.html;
   } catch(e) {}
 }
 
@@ -321,11 +355,8 @@ function ghRequest(method, path, body) {
     xhr.setRequestHeader('User-Agent', 'simin-blog/1.0');
     xhr.timeout = 45000;
     xhr.onload = () => {
-      try {
-        resolve({ ok: xhr.status >= 200 && xhr.status < 300, status: xhr.status, data: JSON.parse(xhr.responseText) });
-      } catch(e) {
-        resolve({ ok: false, status: xhr.status, data: { message: '响应解析失败' } });
-      }
+      try { resolve({ ok: xhr.status >= 200 && xhr.status < 300, status: xhr.status, data: JSON.parse(xhr.responseText) }); }
+      catch(e) { resolve({ ok: false, status: xhr.status, data: { message: '响应解析失败' } }); }
     };
     xhr.onerror = () => reject(new Error('网络请求失败'));
     xhr.ontimeout = () => reject(new Error('请求超时'));
@@ -342,23 +373,18 @@ function compressImage(file) {
       URL.revokeObjectURL(url);
       const MAX = 2000;
       let w = img.width, h = img.height;
-      if (Math.max(w, h) > MAX) {
-        const s = MAX / Math.max(w, h);
-        w = Math.round(w * s); h = Math.round(h * s);
-      }
+      if (Math.max(w, h) > MAX) { const s = MAX / Math.max(w, h); w = Math.round(w * s); h = Math.round(h * s); }
       const canvas = document.createElement('canvas');
       canvas.width = w; canvas.height = h;
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
       ctx.drawImage(img, 0, 0, w, h);
-      // 二分查找合适的质量值，目标 <500KB
       let lo = 0.4, hi = 0.95, best = null;
       for (let i = 0; i < 6; i++) {
         const q = (lo + hi) / 2;
         const b64 = canvas.toDataURL('image/jpeg', q).split(',')[1];
-        const bytes = b64.length * 0.75; // base64 → binary
-        if (bytes < 500 * 1024) { best = b64; lo = q; }
-        else { hi = q; }
+        const bytes = b64.length * 0.75;
+        if (bytes < 500 * 1024) { best = b64; lo = q; } else { hi = q; }
       }
       if (!best) best = canvas.toDataURL('image/jpeg', 0.4).split(',')[1];
       resolve({ base64: best, ext: 'jpg', origKB: Math.round(file.size/1024), newKB: Math.round(best.length*0.75/1024) });
@@ -368,48 +394,110 @@ function compressImage(file) {
   });
 }
 
-// ============ 图片上传（XHR 方式）============
+// ============ 图片上传 ============
 async function uploadImage(input) {
   const file = input.files[0];
   if (!file) { input.value = ''; return; }
-
-  if (file.size > 30 * 1024 * 1024) {
-    setStatus('图片太大，请控制在 30MB 以内', 'error');
-    input.value = '';
-    return;
-  }
-
+  if (file.size > 30 * 1024 * 1024) { setStatus('图片太大，请控制在 30MB 以内', 'error'); input.value = ''; return; }
   setStatus('正在压缩图片...', '');
-
   try {
     const compressed = await compressImage(file);
-
     const shortId = Math.random().toString(36).slice(2, 8);
-    const ext = 'jpg'; // 压缩后统一 JPG
-
-    // 只在文本框插入 ⏏ 标记，不上传
-    const marker = `⏏${shortId}`;
-    const ta = document.getElementById('bodyInput');
-    const pos = ta.selectionStart;
-    ta.value = ta.value.slice(0, pos) + marker + '\n' + ta.value.slice(pos);
-    UPLOADS[shortId] = {
-      base64: compressed.base64,
-      ext: ext
-    };
-    updatePreview();
+    // 在编辑器插入图片
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file); // 临时预览
+    img.alt = '图';
+    img.dataset.uploadId = shortId;
+    const ed = document.getElementById('editor');
+    ed.appendChild(img);
+    ed.focus();
+    UPLOADS[shortId] = { base64: compressed.base64, ext: 'jpg' };
     setStatus(`✅ 已压缩 ${compressed.origKB}KB → ${compressed.newKB}KB（发布时才上传）`, 'success');
-  } catch(err) {
-    setStatus('读取失败: ' + err.message, 'error');
-  }
+  } catch(err) { setStatus('读取失败: ' + err.message, 'error'); }
   input.value = '';
 }
 
-// ============ 发布（XHR 方式）============
+// ============ HTML → Markdown 转换 ============
+function htmlToMarkdown(element) {
+  if (!element) return '';
+  let md = '';
+  element.childNodes.forEach(node => {
+    if (node.nodeType === 3) { // Text node
+      md += node.textContent;
+    } else if (node.nodeType === 1) { // Element node
+      const tag = node.nodeName.toLowerCase();
+      switch (tag) {
+        case 'br': md += '\n'; break;
+        case 'strong': case 'b':
+          md += '**' + htmlToMarkdown(node) + '**'; break;
+        case 'em': case 'i':
+          md += '*' + htmlToMarkdown(node) + '*'; break;
+        case 'u':
+          md += '<u>' + htmlToMarkdown(node) + '</u>'; break;
+        case 'del': case 's': case 'strike':
+          md += '~~' + htmlToMarkdown(node) + '~~'; break;
+        case 'h1': md += '# ' + htmlToMarkdown(node) + '\n\n'; break;
+        case 'h2': md += '## ' + htmlToMarkdown(node) + '\n\n'; break;
+        case 'h3': md += '### ' + htmlToMarkdown(node) + '\n\n'; break;
+        case 'h4': md += '#### ' + htmlToMarkdown(node) + '\n\n'; break;
+        case 'a':
+          md += '[' + htmlToMarkdown(node) + '](' + (node.getAttribute('href') || '#') + ')'; break;
+        case 'img':
+          const src = node.dataset.uploadId
+            ? `⏏${node.dataset.uploadId}`
+            : (node.getAttribute('src') || '');
+          md += `![${node.getAttribute('alt') || '图'}](${src})\n`; break;
+        case 'span':
+          const style = node.getAttribute('style') || '';
+          if (style) {
+            md += '<span' + (style ? ' style="' + style + '"' : '') + '>' + htmlToMarkdown(node) + '</span>';
+          } else {
+            md += htmlToMarkdown(node);
+          }
+          break;
+        case 'blockquote':
+          const quoteLines = htmlToMarkdown(node).trim().split('\n');
+          md += quoteLines.map(l => '> ' + l).join('\n') + '\n\n';
+          break;
+        case 'ul': md += htmlToMarkdown(node) + '\n'; break;
+        case 'ol': md += htmlToMarkdown(node) + '\n'; break;
+        case 'li':
+          const parent = node.parentNode ? node.parentNode.nodeName.toLowerCase() : '';
+          const prefix = parent === 'ol' ? '1. ' : '- ';
+          md += prefix + htmlToMarkdown(node).replace(/\n/g, ' ') + '\n';
+          break;
+        case 'p':
+          md += htmlToMarkdown(node) + '\n\n';
+          break;
+        case 'div':
+          md += htmlToMarkdown(node) + '\n';
+          break;
+        case 'code':
+          if (node.parentNode && node.parentNode.nodeName.toLowerCase() === 'pre') {
+            md += '```\n' + node.textContent + '\n```\n\n';
+          } else {
+            md += '`' + htmlToMarkdown(node) + '`';
+          }
+          break;
+        case 'pre':
+          md += htmlToMarkdown(node) + '\n';
+          break;
+        default:
+          md += htmlToMarkdown(node);
+      }
+    }
+  });
+  return md;
+}
+
+// ============ 发布 ============
 async function publishPost() {
   const title = document.getElementById('titleInput').value.trim();
-  const body = document.getElementById('bodyInput').value.trim();
-  if (!title || !body) { setStatus('标题和正文不能为空', 'error'); return; }
+  if (!title) { setStatus('标题不能为空', 'error'); return; }
   if (!GITHUB_TOKEN) { showTokenDialog(() => publishPost()); return; }
+
+  const editor = document.getElementById('editor');
+  const html = editor.innerHTML;
 
   // 先上传所有未上传的图片
   const toUpload = Object.keys(UPLOADS).filter(sid => UPLOADS[sid].base64 && !UPLOADS[sid].uploaded);
@@ -420,118 +508,53 @@ async function publishPost() {
       const path = `u/${sid}.${u.ext}`;
       try {
         const r = await ghRequest('PUT', path, { message: `upload ${path}`, content: u.base64 });
-        if (r.ok) { u.uploaded = true; delete u.base64; /* 清掉 base64 释放内存 */ }
+        if (r.ok) { u.uploaded = true; delete u.base64; }
         else { setStatus('图片上传失败: ' + (r.data && r.data.message || '未知'), 'error'); return; }
       } catch(e) { setStatus('图片上传出错: ' + e.message, 'error'); return; }
     }
     setStatus('图片已上传，正在发布...', '');
   }
 
-  const dateStr = document.getElementById('dateInput').value.trim()
-    || (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })();
-  const slug = title.replace(/[^\w\u4e00-\u9fa5\s-]/g, '').replace(/\s+/g, '-').toLowerCase().slice(0, 50) || 'untitled';
-  // 展开 ⏏xxxxxx → ![图](/u/xxxxxx.jpg)
-  let cookedBody = body.replace(/⏏(\w{6})/g, (match, sid) => {
+  // 转换为 Markdown
+  let body = htmlToMarkdown(editor).replace(/[\u200B\x00]/g, '');
+
+  // 展开 ⏏ 标记
+  body = body.replace(/⏏(\w{6})/g, (match, sid) => {
     const u = UPLOADS[sid];
     return u ? `![图](/u/${sid}.${u.ext})` : match;
   });
+
+  const dateStr = document.getElementById('dateInput').value.trim()
+    || (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })();
+  const slug = title.replace(/[^\w\u4e00-\u9fa5\s-]/g, '').replace(/\s+/g, '-').toLowerCase().slice(0, 50) || 'untitled';
   const cats = categories.length ? '\ncategories: [' + categories.map(c => `"${c}"`).join(', ') + ']' : '';
   const tgs = tags.length ? '\ntags: [' + tags.map(t => `"${t}"`).join(', ') + ']' : '';
-  const content = `---\nlayout: post\ntitle: "${title}"\ndate: ${dateStr} 12:00:00 +0800${cats}${tgs}\n---\n\n${cookedBody}\n`;
+  const content = `---\nlayout: post\ntitle: "${title}"\ndate: ${dateStr} 12:00:00 +0800${cats}${tgs}\n---\n\n${body}\n`;
 
   const filename = `_posts/${dateStr}-${slug}.md`;
-  // 用 TextEncoder 做 UTF-8 → Base64（替代已废弃的 unescape）
   const bytes = new TextEncoder().encode(content);
   let binary = ''; for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
   const base64 = btoa(binary);
 
   setStatus('正在发布...', '');
-
   try {
     const result = await ghRequest('PUT', filename, { message: `新文章: ${title}`, content: base64 });
-
     if (result.ok) {
       setStatus('✅ 发布成功！1-2 分钟后可见', 'success');
-      localStorage.removeItem('blog_draft');
+      localStorage.removeItem('blog_draft_v2');
       document.getElementById('titleInput').value = '';
-      document.getElementById('bodyInput').value = '';
+      document.getElementById('dateInput').value = '';
+      editor.innerHTML = '';
       categories = []; tags = []; UPLOADS = {};
       renderTags('categories'); renderTags('tags');
     } else {
       const msg = result.data && result.data.message || '';
       if (result.status === 401 || result.status === 403 || msg.includes('token')) {
-        localStorage.removeItem('github_token');
-        GITHUB_TOKEN = null;
+        localStorage.removeItem('github_token'); GITHUB_TOKEN = null;
         setStatus('Token 无效，请重新设置', 'error');
-      } else {
-        setStatus('发布失败: ' + msg, 'error');
-      }
+      } else { setStatus('发布失败: ' + msg, 'error'); }
     }
-  } catch(err) {
-    setStatus('发布出错: ' + err.message, 'error');
-  }
-}
-
-// ============ 格式工具栏 ============
-function getTextarea() { return document.getElementById('bodyInput'); }
-
-// 获取选区或光标位置
-function getSel() {
-  const ta = getTextarea();
-  return { start: ta.selectionStart, end: ta.selectionEnd, text: ta.value.slice(ta.selectionStart, ta.selectionEnd) };
-}
-
-// 替换选区内容
-function replaceSel(start, end, text) {
-  const ta = getTextarea();
-  ta.value = ta.value.slice(0, start) + text + ta.value.slice(end);
-  ta.selectionStart = ta.selectionEnd = start + text.length;
-  ta.focus();
-  updatePreview();
-}
-
-// 包裹选区：在前后加标记
-function fmtWrap(before, after) {
-  const s = getSel();
-  const txt = s.text || (before === after ? '' : '文本');
-  if (txt) {
-    replaceSel(s.start, s.end, before + txt + after);
-  } else {
-    replaceSel(s.start, s.end, before + after);
-  }
-}
-
-// 在行首插入前缀
-function fmtLine(prefix) {
-  const ta = getTextarea();
-  const start = ta.selectionStart;
-  // 找到当前行开头
-  const lines = ta.value.slice(0, start).split('\n');
-  const lineStart = start - lines[lines.length-1].length;
-  ta.value = ta.value.slice(0, lineStart) + prefix + ta.value.slice(lineStart);
-  ta.selectionStart = ta.selectionEnd = lineStart + prefix.length;
-  ta.focus();
-  updatePreview();
-}
-
-// 字号：用 HTML span
-function fmtFontSize(size) {
-  const s = getSel();
-  const txt = s.text || '文字';
-  replaceSel(s.start, s.end, `<span style="font-size:${size}">${txt}</span>`);
-}
-
-// 字体：用 HTML span
-function fmtFontFamily(family) {
-  const s = getSel();
-  const txt = s.text || '文字';
-  replaceSel(s.start, s.end, `<span style="font-family:${family}">${txt}</span>`);
-}
-
-// 插入图片标记
-function fmtImage() {
-  const s = getSel();
-  replaceSel(s.start, s.end, `![图片描述](图片URL)`);
+  } catch(err) { setStatus('发布出错: ' + err.message, 'error'); }
 }
 
 function setStatus(text, type) {
@@ -539,6 +562,26 @@ function setStatus(text, type) {
   el.textContent = text;
   el.className = type || '';
 }
+
+// ============ 自动保存 ============
+let autoSaveTimer;
+document.getElementById('editor').addEventListener('input', () => {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(saveDraft, 2000);
+});
+
+// 初始化焦点处理
+document.addEventListener('click', (e) => {
+  const ed = document.getElementById('editor');
+  if (ed && ed === document.activeElement) return;
+});
+
+// 粘贴时只保留纯文本，避免格式污染
+document.getElementById('editor').addEventListener('paste', (e) => {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+  document.execCommand('insertText', false, text);
+});
 </script>
 </body>
 </html>
