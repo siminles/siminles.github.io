@@ -242,27 +242,45 @@ function renderTags(t) {
 function updatePreview() {
   const body = document.getElementById('bodyInput').value;
   const pv = document.getElementById('previewPanel');
-  let h = body
+  if (!body.trim()) { pv.innerHTML = '<p style="color:#aaa;">预览区</p>'; return; }
+
+  // Protect HTML tags (e.g. <span>) so Markdown processing doesn't break them
+  const htmlTags = [];
+  let txt = body.replace(/<[^>]+>/g, function(m) {
+    htmlTags.push(m);
+    return '\x00HTML' + (htmlTags.length-1) + '\x00';
+  });
+
+  // Convert Markdown to HTML
+  txt = txt
     .replace(/^### (.+)$/gm, '<h3>$1</h3>')
     .replace(/^## (.+)$/gm, '<h2>$1</h2>')
     .replace(/^# (.+)$/gm, '<h1>$1</h1>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/~~(.+?)~~/g, '<del>$1</del>')
     .replace(/`(.+?)`/g, '<code>$1</code>')
     .replace(/^- (.+)$/gm, '<li>$1</li>')
-    // 展开 ⏏ 标记为预览图
-    h = h.replace(/⏏(\w{6})/g, (match, sid) => {
-      const u = UPLOADS[sid];
-      return u ? `<img src="${u.blobUrl}" style="max-width:100%">` : match;
-    });
-    // 标准 markdown 图片语法
-    h = h.replace(/!\[(.+?)\]\((.+?)\)/g, (match, alt, src) => {
-      const realSrc = UPLOADED_BLOBS[src] || src;
-      return `<img src="${realSrc}" alt="${alt}" style="max-width:100%">`;
-    })
-    .replace(/\n{2,}/g, '</p><p>')
-    .replace(/\n/g, '<br>');
-  pv.innerHTML = body.trim() ? '<p>' + h + '</p>' : '<p style="color:#aaa;">预览区</p>';
+    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+
+  // Image placeholders
+  txt = txt.replace(/⏏(\w{6})/g, function(m, sid) {
+    const u = UPLOADS[sid];
+    return u ? '<img src="' + u.blobUrl + '" style="max-width:100%">' : m;
+  });
+  txt = txt.replace(/!\[(.+?)\]\((.+?)\)/g, function(m, alt, src) {
+    const realSrc = UPLOADED_BLOBS[src] || src;
+    return '<img src="' + realSrc + '" alt="' + alt + '" style="max-width:100%">';
+  });
+
+  // Restore HTML tags
+  txt = txt.replace(/\x00HTML(\d+)\x00/g, function(m, idx) {
+    return htmlTags[parseInt(idx)] || m;
+  });
+
+  // Wrap paragraphs
+  txt = txt.replace(/\n{2,}/g, '</p><p>').replace(/\n/g, '<br>');
+  pv.innerHTML = '<p>' + txt + '</p>';
 }
 
 // ============ 草稿 ============
