@@ -244,7 +244,13 @@ function renderTags(t) {
 // ============ 编辑器命令 ============
 let savedRange = null;
 
-// 点击工具栏前保存选区（因为点下拉框会让编辑器失焦）
+// 编辑器失焦前保存选区（点下拉框会触发 blur）
+document.getElementById('editor').addEventListener('blur', () => {
+  const sel = window.getSelection();
+  if (sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
+});
+
+// 工具栏 mousedown 也保存一次（兼容不同浏览器时序）
 document.querySelector('.fmt-bar').addEventListener('mousedown', (e) => {
   const sel = window.getSelection();
   if (sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
