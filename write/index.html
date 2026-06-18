@@ -242,6 +242,14 @@ function renderTags(t) {
 }
 
 // ============ 编辑器命令 ============
+let savedRange = null;
+
+// 点击工具栏前保存选区（因为点下拉框会让编辑器失焦）
+document.querySelector('.fmt-bar').addEventListener('mousedown', (e) => {
+  const sel = window.getSelection();
+  if (sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
+});
+
 function exec(cmd, val) {
   document.execCommand(cmd, false, val || null);
   document.getElementById('editor').focus();
@@ -261,6 +269,13 @@ function applyFontFamily(family) {
 }
 
 function wrapSelection(tagName, styles) {
+  // 恢复之前保存的选区（如果有点击了工具栏dropdown）
+  if (savedRange) {
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(savedRange);
+    savedRange = null;
+  }
   const sel = window.getSelection();
   if (!sel.rangeCount) return;
   const range = sel.getRangeAt(0);
