@@ -266,14 +266,10 @@ function wrapSelection(tagName, styles) {
   const range = sel.getRangeAt(0);
   const editor = document.getElementById('editor');
 
-  if (range.collapsed) {
-    // No selection: insert placeholder text wrapped in styled span
-    const span = document.createElement(tagName);
-    Object.assign(span.style, styles);
-    span.textContent = '文字';
-    range.insertNode(span);
-    sel.selectAllChildren(span);
-  } else if (range.commonAncestorContainer === editor ||
+  // 没选中文字时不做任何事
+  if (range.collapsed) { editor.focus(); return; }
+
+  if (range.commonAncestorContainer === editor ||
              editor.contains(range.commonAncestorContainer)) {
     // Selection inside editor: wrap with span
     // First try surroundContents (works for simple text nodes)
