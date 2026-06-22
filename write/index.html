@@ -58,7 +58,7 @@ permalink: /write/
       font-size: 0.8rem; background: #fff; cursor: pointer;
     }
     .fmt-bar .sep { width: 1px; height: 20px; background: #ccc; margin: 0 3px; }
-    .emoji-btn { position: relative; }
+    .emoji-wrap { position: relative; display: inline-block; }
     .emoji-picker {
       display: none; position: absolute; bottom: 110%; left: 0;
       background: #fff; border: 1px solid #ddd; border-radius: 8px;
@@ -160,7 +160,10 @@ permalink: /write/
       <span class="sep"></span>
       <button onclick="insertLink()" title="插入链接">🔗</button>
       <span class="sep"></span>
-      <button class="emoji-btn" onclick="toggleEmoji()" title="表情">😊</button>
+      <span class="emoji-wrap">
+        <button class="emoji-btn" onclick="toggleEmoji()" title="表情">😊</button>
+        <div class="emoji-picker" id="emojiPicker"></div>
+      </span>
       <select onchange="applyFontSize(this.value);this.value=''" title="字号">
         <option value="">字号</option>
         <option value="14px">小(14)</option>
@@ -178,7 +181,6 @@ permalink: /write/
       </select>
     </div>
     <div id="editor" contenteditable="true" placeholder="在这里写文章…"></div>
-    <div class="emoji-picker" id="emojiPicker"></div>
   </div>
 
   <div class="actions">
