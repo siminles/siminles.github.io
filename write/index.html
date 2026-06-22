@@ -101,6 +101,10 @@ permalink: /write/
     .btn-publish:hover { background: #a04a4a; }
     .btn-save { background: #eee; color: #333; }
     .btn-save:hover { background: #ddd; }
+    .btn-sync { background: #e3f0fd; color: #2563eb; }
+    .btn-sync:hover { background: #d0e5fc; }
+    .btn-load { background: #e8f5e9; color: #2e7d32; }
+    .btn-load:hover { background: #c8e6c9; }
     .btn-upload { background: #eee; color: #333; }
     .btn-upload:hover { background: #ddd; }
     #status { font-size: 0.85rem; color: #888; margin-top: 8px; }
@@ -189,6 +193,8 @@ permalink: /write/
     <button class="btn-upload" onclick="document.getElementById('imageInput').click()">🖼️ 上传图片</button>
     <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="uploadImage(this)" />
     <button class="btn-save" onclick="saveDraft()">保存草稿</button>
+    <button class="btn-sync" onclick="syncCloud()">☁️ 同步</button>
+    <button class="btn-load" onclick="loadCloud()">⬇️ 加载云端</button>
     <button class="btn-publish" onclick="publishPost()">发布</button>
   </div>
   <div id="status"></div>
@@ -430,6 +436,63 @@ function loadDraft() {
     renderTags('categories'); renderTags('tags');
     if (d.html) document.getElementById('editor').innerHTML = d.html;
   } catch(e) {}
+}
+
+// ============ 云端草稿同步 ============
+const DRAFT_PATH = 'blog-draft.json';
+
+async function syncCloud() {
+  if (!GITHUB_TOKEN) { showTokenDialog(() => syncCloud()); return; }
+  const ed = document.getElementById('editor');
+  const draft = {
+    title: document.getElementById('titleInput').value,
+    date: document.getElementById('dateInput').value,
+    categories, tags,
+    html: ed.innerHTML,
+    updatedAt: new Date().toISOString()
+  };
+  setStatus('正在同步到云端...', '');
+  try {
+    // 先检查远程文件是否存在
+    let sha = null;
+    try {
+      const check = await ghRequest('GET', DRAFT_PATH);
+      if (check.ok && check.data && check.data.sha) sha = check.data.sha;
+    } catch(e) {}
+    const body = { message: '同步草稿', content: btoa(unescape(encodeURIComponent(JSON.stringify(draft)))) };
+    if (sha) body.sha = sha;
+    const r = await ghRequest('PUT', DRAFT_PATH, body);
+    if (r.ok) {
+      setStatus('☁️ 草稿已同步到云端，任何设备都能加载', 'success');
+    } else {
+      setStatus('同步失败: ' + (r.data && r.data.message || '未知'), 'error');
+    }
+  } catch(e) { setStatus('同步出错: ' + e.message, 'error'); }
+}
+
+async function loadCloud() {
+  if (!GITHUB_TOKEN) { showTokenDialog(() => loadCloud()); return; }
+  setStatus('正在加载云端草稿...', '');
+  try {
+    const r = await ghRequest('GET', DRAFT_PATH);
+    if (r.ok && r.data && r.data.content) {
+      const json = JSON.parse(decodeURIComponent(escape(atob(r.data.content))));
+      document.getElementById('titleInput').value = json.title || '';
+      document.getElementById('dateInput').value = json.date || '';
+      categories = json.categories || [];
+      tags = json.tags || [];
+      renderTags('categories'); renderTags('tags');
+      if (json.html) document.getElementById('editor').innerHTML = json.html;
+      // 同时保存到本地
+      saveDraft();
+      const updated = json.updatedAt ? ' (' + new Date(json.updatedAt).toLocaleString('zh-CN') + ')' : '';
+      setStatus('⬇️ 云端草稿已加载' + updated, 'success');
+    } else if (r.status === 404) {
+      setStatus('云端还没有草稿，先点「☁️ 同步」上传一份', '');
+    } else {
+      setStatus('加载失败: ' + (r.data && r.data.message || '未知'), 'error');
+    }
+  } catch(e) { setStatus('加载出错: ' + e.message, 'error'); }
 }
 
 // ============ 封装 XHR Promise ============
