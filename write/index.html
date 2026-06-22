@@ -624,14 +624,23 @@ function htmlToMarkdown(element) {
       const tag = node.nodeName.toLowerCase();
       switch (tag) {
         case 'br': md += '\n'; break;
-        case 'strong': case 'b':
-          md += '**' + htmlToMarkdown(node) + '**'; break;
-        case 'em': case 'i':
-          md += '*' + htmlToMarkdown(node) + '*'; break;
+        case 'strong': case 'b': {
+          const t = htmlToMarkdown(node);
+          md += t.trim() ? '**' + t + '**' : t;
+          break;
+        }
+        case 'em': case 'i': {
+          const t = htmlToMarkdown(node);
+          md += t.trim() ? '*' + t + '*' : t;
+          break;
+        }
         case 'u':
           md += '<u>' + htmlToMarkdown(node) + '</u>'; break;
-        case 'del': case 's': case 'strike':
-          md += '~~' + htmlToMarkdown(node) + '~~'; break;
+        case 'del': case 's': case 'strike': {
+          const t = htmlToMarkdown(node);
+          md += t.trim() ? '~~' + t + '~~' : t;
+          break;
+        }
         case 'h1': md += '# ' + htmlToMarkdown(node) + '\n\n'; break;
         case 'h2': md += '## ' + htmlToMarkdown(node) + '\n\n'; break;
         case 'h3': md += '### ' + htmlToMarkdown(node) + '\n\n'; break;
