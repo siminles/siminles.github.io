@@ -14,6 +14,7 @@ plugins:
 # 构建
 permalink: /:year/:month/:title/
 markdown: kramdown
+future: true
 
 # 分类 & 标签 归档
 jekyll-archives:
