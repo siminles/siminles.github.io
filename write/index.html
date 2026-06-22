@@ -96,6 +96,10 @@ permalink: /write/
       border-left: 3px solid #b85c5c; padding-left: 12px; color: #666;
       margin: 0.5em 0;
     }
+    #editor hr {
+      border: none; border-top: 1px dashed #ccc;
+      margin: 1em 0;
+    }
     .actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
     .actions button {
       padding: 10px 24px; border: none; border-radius: 6px;
@@ -205,6 +209,8 @@ permalink: /write/
         <button class="emoji-btn" onclick="toggleEmoji()" title="表情">😊</button>
         <div class="emoji-picker" id="emojiPicker"></div>
       </span>
+      <span class="sep"></span>
+      <button onclick="insertHr()" title="分隔线">—</button>
       <select onchange="applyFontSize(this.value);this.value=''" title="字号">
         <option value="">字号</option>
         <option value="14px">小(14)</option>
@@ -403,6 +409,23 @@ function insertLink() {
     }
   }
   document.getElementById('editor').focus();
+}
+
+function insertHr() {
+  const ed = document.getElementById('editor');
+  ed.focus();
+  const sel = window.getSelection();
+  if (sel.rangeCount) {
+    const range = sel.getRangeAt(0);
+    const hr = document.createElement('hr');
+    range.deleteContents();
+    range.insertNode(hr);
+    // 在 hr 后面插入一个空文本节点方便继续输入
+    const br = document.createElement('br');
+    hr.parentNode.insertBefore(br, hr.nextSibling);
+    range.setStartAfter(br);
+    range.collapse(true);
+  }
 }
 
 // ============ 表情选择器 ============
@@ -624,6 +647,7 @@ function htmlToMarkdown(element) {
       const tag = node.nodeName.toLowerCase();
       switch (tag) {
         case 'br': md += '\n'; break;
+        case 'hr': md += '\n---\n'; break;
         case 'strong': case 'b': {
           const t = htmlToMarkdown(node);
           md += t.trim() ? '**' + t + '**' : t;
@@ -775,6 +799,7 @@ async function loadPostForEdit(path, sha) {
       .replace(/^### (.+)$/gm, '<h3>$1</h3>')
       .replace(/^## (.+)$/gm, '<h2>$1</h2>')
       .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+      .replace(/^---$/gm, '<hr>')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.+?)\*/g, '<em>$1</em>')
       .replace(/`([^`]+)`/g, '<code>$1</code>')
