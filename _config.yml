@@ -8,6 +8,7 @@ theme: null
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+  - jekyll-sitemap
   - jekyll-archives
 
 # 构建
