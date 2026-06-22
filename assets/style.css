@@ -593,57 +593,6 @@ html.dark .write-fab {
 }
 .reading-time::before { content: "· "; margin: 0 0.3rem; }
 
-/* === Hamburger Menu === */
-.hamburger {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  z-index: 101;
-}
-.hamburger span {
-  display: block;
-  width: 22px;
-  height: 2px;
-  background: var(--text);
-  border-radius: 2px;
-  transition: transform 0.3s, opacity 0.3s;
-}
-.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.hamburger.open span:nth-child(2) { opacity: 0; }
-.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-@media (max-width: 700px) {
-  .hamburger { display: flex; }
-  #mainNav {
-    display: none;
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    padding: 0.5rem 0;
-    flex-direction: column;
-    min-width: 120px;
-    z-index: 100;
-  }
-  #mainNav.open { display: flex; }
-  #mainNav a {
-    margin: 0;
-    padding: 0.6rem 1.2rem;
-    font-size: 0.85rem;
-    white-space: nowrap;
-  }
-  #mainNav a:hover { background: var(--bg-alt); }
-  .header-right { position: relative; }
-  .site-header nav a { margin: 0; }
-}
-
 /* === Back to Top === */
 .back-to-top {
   position: fixed;

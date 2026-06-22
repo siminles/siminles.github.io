@@ -23,10 +23,7 @@
         <span class="petal p6"></span>
       </div>
       <div class="header-right">
-        <button class="hamburger" id="hamburgerBtn" aria-label="菜单">
-          <span></span><span></span><span></span>
-        </button>
-        <nav id="mainNav">
+        <nav>
           <a href="{{ "/" | relative_url }}">首页</a>
           <a href="{{ "/archive" | relative_url }}">归档</a>
           <a href="{{ "/categories" | relative_url }}">分类</a>
@@ -76,23 +73,6 @@
         const isDark = html.classList.contains('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         toggle.textContent = isDark ? '☀️' : '🌙';
-      });
-    })();
-
-    // 汉堡菜单
-    (function() {
-      const btn = document.getElementById('hamburgerBtn');
-      const nav = document.getElementById('mainNav');
-      btn.addEventListener('click', () => {
-        btn.classList.toggle('open');
-        nav.classList.toggle('open');
-      });
-      // 点击菜单项自动关闭
-      nav.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => {
-          btn.classList.remove('open');
-          nav.classList.remove('open');
-        });
       });
     })();
 
