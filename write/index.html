@@ -58,6 +58,20 @@ permalink: /write/
       font-size: 0.8rem; background: #fff; cursor: pointer;
     }
     .fmt-bar .sep { width: 1px; height: 20px; background: #ccc; margin: 0 3px; }
+    .emoji-btn { position: relative; }
+    .emoji-picker {
+      display: none; position: absolute; bottom: 110%; left: 0;
+      background: #fff; border: 1px solid #ddd; border-radius: 8px;
+      padding: 10px; width: 300px; max-height: 220px;
+      overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      z-index: 200; grid-template-columns: repeat(10, 1fr); gap: 2px;
+    }
+    .emoji-picker.open { display: grid; }
+    .emoji-picker span {
+      cursor: pointer; font-size: 1.3rem; padding: 4px; text-align: center;
+      border-radius: 4px; transition: background 0.15s; user-select: none;
+    }
+    .emoji-picker span:hover { background: #f0f0ee; }
     #editor {
       padding: 16px; min-height: 45vh; outline: none; line-height: 1.8;
       font-size: 0.95rem; overflow-y: auto;
@@ -146,6 +160,7 @@ permalink: /write/
       <span class="sep"></span>
       <button onclick="insertLink()" title="插入链接">🔗</button>
       <span class="sep"></span>
+      <button class="emoji-btn" onclick="toggleEmoji()" title="表情">😊</button>
       <select onchange="applyFontSize(this.value);this.value=''" title="字号">
         <option value="">字号</option>
         <option value="14px">小(14)</option>
@@ -163,6 +178,7 @@ permalink: /write/
       </select>
     </div>
     <div id="editor" contenteditable="true" placeholder="在这里写文章…"></div>
+    <div class="emoji-picker" id="emojiPicker"></div>
   </div>
 
   <div class="actions">
@@ -333,6 +349,57 @@ function insertLink() {
   }
   document.getElementById('editor').focus();
 }
+
+// ============ 表情选择器 ============
+const EMOJI_LIST = [
+  '😀','😃','😄','😁','😅','😂','🤣','😊','😇','🙂','😉','😌','😍','🥰','😘','😗','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤮','🥴','😵','🤯','🥳','😎','🤓','🧐','😟','😕','🙁','😮','😯','😲','😳','🥺','😢','😭','😤','😡','🤬','😈','💀','☠️','👻','👽','🤖','💩',
+  '👍','👎','👏','🙌','🤝','💪','👋','🤞','✌️','🤟','👌','🤏','✊','👊','🤛','🤜','🖖','🤘','🖐️','✋','☝️','👇','👆','👉','👈',
+  '❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','💟',
+  '⭐','🌟','✨','💫','🔥','💥','💯','💢','💦','💤','🕳️',
+  '🌸','🌺','🌻','🌹','🌷','🌼','💐','🥀','🍀','🌿','🌱','🌵','🌴','🌳','🌲','🍂','🍁','🌾',
+  '🎀','🎁','🎂','🎈','🎉','🎊','🎃','🎄','🎋','🎑','🧧','🎗️','🎟️',
+  '☕','🍵','🍰','🍦','🍩','🍪','🍫','🍬','🍭','🍡','🍧','🍨','🧁','🥤','🧃',
+  '🐱','🐶','🐰','🐻','🐼','🐨','🐯','🦊','🐮','🐷','🐸','🐵','🐔','🐤','🐦','🦄','🐙','🦋','🐞','🐝',
+  '📝','✏️','📌','📍','📎','🖇️','📖','📚','📓','📔','📒','📕','📗','📘','📙',
+  '💻','📱','⌨️','🖥️','🖱️','🎧','📷','📸','🎬','🎤','🎵','🎶','📺','⏰','💡','🔦','💰','💎','🔑','🛒',
+  '💬','🗨️','🗯️','💭','📢','📣','🔔','🔕',
+  '✅','❌','⭕','❓','❗','💢','♨️','〽️','⚠️','🚫','🔞','⬆️','⬇️','➡️','⬅️','↗️','↘️','↙️','↖️','🔄','🔃'
+];
+
+function buildEmojiPicker() {
+  const picker = document.getElementById('emojiPicker');
+  picker.innerHTML = EMOJI_LIST.map(e => `<span onclick="insertEmoji('${e}')">${e}</span>`).join('');
+}
+
+function toggleEmoji() {
+  const picker = document.getElementById('emojiPicker');
+  if (!picker.children.length) buildEmojiPicker();
+  picker.classList.toggle('open');
+  document.getElementById('editor').focus();
+}
+
+function insertEmoji(emoji) {
+  const ed = document.getElementById('editor');
+  ed.focus();
+  const sel = window.getSelection();
+  if (sel.rangeCount) {
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    range.insertNode(document.createTextNode(emoji));
+    range.collapse(false);
+  }
+  document.getElementById('emojiPicker').classList.remove('open');
+}
+
+// 点击其他地方关闭表情面板
+document.addEventListener('click', (e) => {
+  const picker = document.getElementById('emojiPicker');
+  if (!picker) return;
+  const btn = document.querySelector('.emoji-btn');
+  if (!picker.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+    picker.classList.remove('open');
+  }
+});
 
 // ============ 草稿 ============
 function saveDraft() {
