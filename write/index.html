@@ -655,8 +655,8 @@ function htmlToMarkdown(element) {
           const quoteLines = htmlToMarkdown(node).trim().split('\n');
           md += quoteLines.map(l => '> ' + l).join('\n') + '\n\n';
           break;
-        case 'ul': md += htmlToMarkdown(node) + '\n'; break;
-        case 'ol': md += htmlToMarkdown(node) + '\n'; break;
+        case 'ul': md += htmlToMarkdown(node) + '\n\n'; break;
+        case 'ol': md += htmlToMarkdown(node) + '\n\n'; break;
         case 'li':
           const parent = node.parentNode ? node.parentNode.nodeName.toLowerCase() : '';
           const prefix = parent === 'ol' ? '1. ' : '- ';
@@ -666,7 +666,7 @@ function htmlToMarkdown(element) {
           md += htmlToMarkdown(node) + '\n\n';
           break;
         case 'div':
-          md += htmlToMarkdown(node) + '\n';
+          md += htmlToMarkdown(node) + '\n\n';
           break;
         case 'code':
           if (node.parentNode && node.parentNode.nodeName.toLowerCase() === 'pre') {
@@ -676,7 +676,7 @@ function htmlToMarkdown(element) {
           }
           break;
         case 'pre':
-          md += htmlToMarkdown(node) + '\n';
+          md += htmlToMarkdown(node) + '\n\n';
           break;
         default:
           md += htmlToMarkdown(node);
