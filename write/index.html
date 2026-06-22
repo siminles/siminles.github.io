@@ -102,6 +102,8 @@ permalink: /write/
     }
     .btn-publish { background: #b85c5c; color: #fff; }
     .btn-publish:hover { background: #a04a4a; }
+    .btn-edit { background: #fff3e0; color: #e65100; }
+    .btn-edit:hover { background: #ffe0b2; }
     .btn-save { background: #eee; color: #333; }
     .btn-save:hover { background: #ddd; }
     .btn-sync { background: #e3f0fd; color: #2563eb; }
@@ -116,6 +118,35 @@ permalink: /write/
     @media (max-width: 700px) {
       .fmt-bar { gap: 2px; padding: 6px; }
       .fmt-bar button { padding: 3px 7px; font-size: 0.78rem; }
+    }
+    /* 文章列表面板 */
+    .post-edit-panel {
+      display: none; margin-top: 12px; border: 1px solid #ddd;
+      border-radius: 6px; max-height: 300px; overflow-y: auto;
+      background: #fff;
+    }
+    .post-edit-panel.open { display: block; }
+    .post-edit-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 14px; border-bottom: 1px solid #eee;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .post-edit-item:hover { background: #fafaf8; }
+    .post-edit-item:last-child { border-bottom: none; }
+    .post-edit-item .post-title { font-size: 0.9rem; font-weight: 500; }
+    .post-edit-item .post-date {
+      font-size: 0.75rem; color: #999; flex-shrink: 0; margin-left: 12px;
+    }
+    .edit-mode-banner {
+      display: none; padding: 8px 14px; margin-bottom: 12px;
+      background: #fff3e0; border: 1px solid #ffe0b2; border-radius: 6px;
+      font-size: 0.85rem; color: #e65100;
+      justify-content: space-between; align-items: center;
+    }
+    .edit-mode-banner.active { display: flex; }
+    .edit-mode-banner button {
+      background: none; border: none; color: #e65100;
+      cursor: pointer; font-size: 0.85rem; text-decoration: underline;
     }
   </style>
 </head>
@@ -192,14 +223,21 @@ permalink: /write/
     <div id="editor" contenteditable="true" placeholder="在这里写文章…"></div>
   </div>
 
+  <div class="edit-mode-banner" id="editBanner">
+    📝 正在编辑：<span id="editPostName"></span>
+    <button onclick="cancelEdit()">取消编辑</button>
+  </div>
+
   <div class="actions">
     <button class="btn-upload" onclick="document.getElementById('imageInput').click()">🖼️ 上传图片</button>
     <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="uploadImage(this)" />
     <button class="btn-save" onclick="saveDraft()">保存草稿</button>
     <button class="btn-sync" onclick="syncCloud()">☁️ 同步</button>
     <button class="btn-load" onclick="loadCloud()">⬇️ 加载云端</button>
+    <button class="btn-edit" onclick="togglePostList()">✏️ 编辑文章</button>
     <button class="btn-publish" onclick="publishPost()">发布</button>
   </div>
+  <div class="post-edit-panel" id="postEditPanel"></div>
   <div id="status"></div>
 </div>
 </div>
@@ -215,6 +253,9 @@ let categories = [];
 let tags = [];
 let UPLOADED_BLOBS = {};
 let UPLOADS = {};
+let editMode = false;
+let editFilePath = null;
+let editFileSha = null;
 
 // ============ SHA-256 ============
 async function sha256(s) {
@@ -644,6 +685,126 @@ function htmlToMarkdown(element) {
   return md;
 }
 
+// ============ 编辑文章 ============
+async function togglePostList() {
+  const panel = document.getElementById('postEditPanel');
+  if (panel.classList.contains('open')) {
+    panel.classList.remove('open');
+    return;
+  }
+  if (!GITHUB_TOKEN) { showTokenDialog(() => togglePostList()); return; }
+  panel.innerHTML = '<div style="padding:14px;color:#999;">加载中...</div>';
+  panel.classList.add('open');
+  try {
+    const r = await ghRequest('GET', '_posts/');
+    if (r.ok && r.data) {
+      const items = Array.isArray(r.data) ? r.data : [];
+      items.sort((a, b) => b.name.localeCompare(a.name)); // 最新在上
+      panel.innerHTML = items.length
+        ? items.map(f => `<div class="post-edit-item" onclick="loadPostForEdit('${f.path}','${f.sha}')">
+          <span class="post-title">${f.name.replace('.md','').replace(/^\d{4}-\d{2}-\d{2}-/,'')}</span>
+          <span class="post-date">${f.name.slice(0,10)}</span>
+        </div>`).join('')
+        : '<div style="padding:14px;color:#999;">暂无可编辑的文章</div>';
+    } else {
+      panel.innerHTML = '<div style="padding:14px;color:#e65100;">加载失败</div>';
+    }
+  } catch(e) {
+    panel.innerHTML = '<div style="padding:14px;color:#e65100;">加载出错: ' + e.message + '</div>';
+  }
+}
+
+async function loadPostForEdit(path, sha) {
+  if (!GITHUB_TOKEN) { showTokenDialog(() => loadPostForEdit(path, sha)); return; }
+  setStatus('正在加载文章...', '');
+  try {
+    const r = await ghRequest('GET', path);
+    if (!r.ok || !r.data || !r.data.content) {
+      setStatus('加载文章失败', 'error');
+      return;
+    }
+    const raw = decodeURIComponent(escape(atob(r.data.content)));
+    // 解析 YAML frontmatter
+    const fmMatch = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+    if (!fmMatch) { setStatus('文章格式异常', 'error'); return; }
+    
+    const fm = fmMatch[1];
+    const body = fmMatch[2];
+    
+    // 简单解析 frontmatter
+    const titleMatch = fm.match(/title:\s*["']?(.+?)["']?\s*$/m);
+    const dateMatch = fm.match(/date:\s*(\d{4}-\d{2}-\d{2})/);
+    const catsMatch = fm.match(/categories:\s*\[(.+?)\]/s);
+    const tagsMatch = fm.match(/tags:\s*\[(.+?)\]/s);
+    
+    document.getElementById('titleInput').value = titleMatch ? titleMatch[1] : '';
+    document.getElementById('dateInput').value = dateMatch ? dateMatch[1] : '';
+    
+    // 解析 categories
+    categories = [];
+    if (catsMatch) {
+      const rawCats = catsMatch[1];
+      const catRe = /["']([^"']+)["']/g;
+      let m;
+      while ((m = catRe.exec(rawCats)) !== null) categories.push(m[1]);
+    }
+    
+    // 解析 tags
+    tags = [];
+    if (tagsMatch) {
+      const rawTags = tagsMatch[1];
+      const tagRe = /["']([^"']+)["']/g;
+      let m;
+      while ((m = tagRe.exec(rawTags)) !== null) tags.push(m[1]);
+    }
+    
+    renderTags('categories'); renderTags('tags');
+    
+    // 简单 Markdown → HTML 转换
+    let html = body
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/!\[(.*?)\]\((.+?)\)/g, '<img src="$2" alt="$1">')
+      .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>')
+      .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+      .replace(/^\- (.+)$/gm, '<li>$1</li>')
+      .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
+      .replace(/\n{2,}/g, '</p><p>')
+      .replace(/\n/g, '<br>');
+    
+    if (html.trim()) html = '<p>' + html + '</p>';
+    document.getElementById('editor').innerHTML = html;
+    
+    // 进入编辑模式
+    editMode = true;
+    editFilePath = path;
+    editFileSha = r.data.sha;
+    document.getElementById('editBanner').classList.add('active');
+    document.getElementById('editPostName').textContent = titleMatch ? titleMatch[1] : path;
+    document.getElementById('postEditPanel').classList.remove('open');
+    setStatus('✅ 已载入，修改后点「发布」即可更新', 'success');
+  } catch(e) {
+    setStatus('加载出错: ' + e.message, 'error');
+  }
+}
+
+function cancelEdit() {
+  editMode = false;
+  editFilePath = null;
+  editFileSha = null;
+  document.getElementById('editBanner').classList.remove('active');
+  document.getElementById('titleInput').value = '';
+  document.getElementById('dateInput').value = '';
+  document.getElementById('editor').innerHTML = '';
+  categories = []; tags = []; UPLOADS = {};
+  renderTags('categories'); renderTags('tags');
+  setStatus('已取消编辑', '');
+}
+
 // ============ 发布 ============
 async function publishPost() {
   const title = document.getElementById('titleInput').value.trim();
@@ -685,21 +846,26 @@ async function publishPost() {
   const tgs = tags.length ? '\ntags: [' + tags.map(t => `"${t}"`).join(', ') + ']' : '';
   const content = `---\nlayout: post\ntitle: "${title}"\ndate: ${dateStr} 12:00:00 +0800${cats}${tgs}\n---\n\n${body}\n`;
 
-  const filename = `_posts/${dateStr}-${slug}.md`;
+  const filename = editMode ? editFilePath : `_posts/${dateStr}-${slug}.md`;
   const bytes = new TextEncoder().encode(content);
   let binary = ''; for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
   const base64 = btoa(binary);
 
-  setStatus('正在发布...', '');
+  const commitMsg = editMode ? `更新文章: ${title}` : `新文章: ${title}`;
+  const putBody = { message: commitMsg, content: base64 };
+  if (editMode && editFileSha) putBody.sha = editFileSha;
+
+  setStatus(editMode ? '正在更新...' : '正在发布...', '');
   try {
-    const result = await ghRequest('PUT', filename, { message: `新文章: ${title}`, content: base64 });
+    const result = await ghRequest('PUT', filename, putBody);
     if (result.ok) {
-      setStatus('✅ 发布成功！1-2 分钟后可见', 'success');
+      setStatus(editMode ? '✅ 更新成功！1-2 分钟后可见' : '✅ 发布成功！1-2 分钟后可见', 'success');
       localStorage.removeItem('blog_draft_v2');
       document.getElementById('titleInput').value = '';
       document.getElementById('dateInput').value = '';
       editor.innerHTML = '';
-      categories = []; tags = []; UPLOADS = {};
+      categories = []; tags = []; UPLOADS = {}; editMode = false; editFilePath = null; editFileSha = null;
+      document.getElementById('editBanner').classList.remove('active');
       renderTags('categories'); renderTags('tags');
     } else {
       const msg = result.data && result.data.message || '';
