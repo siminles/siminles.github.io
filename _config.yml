@@ -14,7 +14,17 @@ plugins:
 # 构建
 permalink: /:year/:month/:title/
 markdown: kramdown
+highlighter: rouge
 future: true
+
+# Markdown 扩展
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: 'highlight'
+    block:
+      line_numbers: false
 
 # 分类 & 标签 归档
 jekyll-archives:

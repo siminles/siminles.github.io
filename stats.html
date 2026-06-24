@@ -1,0 +1,80 @@
+---
+layout: default
+title: 写作回顾
+permalink: /stats/
+---
+
+{% assign total_posts = site.posts | size %}
+{% assign total_words = 0 %}
+{% assign total_images = 0 %}
+{% for post in site.posts %}
+  {% assign wc = post.content | strip_html | strip_newlines | size %}
+  {% assign total_words = total_words | plus: wc %}
+  {% assign imgs = post.content | split: '<img' | size | minus: 1 %}
+  {% assign total_images = total_images | plus: imgs %}
+{% endfor %}
+{% assign first_post_date = site.posts.last.date %}
+{% assign days_active = "now" | date: "%s" | minus: first_post_date | date: "%s" | divided_by: 86400 %}
+
+<h1>写作回顾</h1>
+<p class="page-desc">翻一翻过去写过的东西，看看那些细碎的字是怎么攒起来的 🌸</p>
+
+<div class="stats-summary">
+  <div class="stat-card">
+    <div class="stat-number">{{ total_posts }}</div>
+    <div class="stat-label">篇文章</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">{{ total_words }}</div>
+    <div class="stat-label">总字数</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">
+      {% if total_posts > 0 %}{{ total_words | divided_by: total_posts }}{% else %}0{% endif %}
+    </div>
+    <div class="stat-label">平均篇长</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">{{ total_images }}</div>
+    <div class="stat-label">张图片</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">{{ days_active | plus: 0 }}</div>
+    <div class="stat-label">天前开始</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">
+      {% if days_active > 0 %}{{ total_posts | times: 30 | divided_by: days_active }}{% else %}-{% endif %}
+    </div>
+    <div class="stat-label">篇/月（平均）</div>
+  </div>
+</div>
+
+<h2 style="margin-top:2.5rem;">月度分布</h2>
+{% assign posts_by_year = site.posts | group_by_exp: "post", "post.date | date: '%Y'" %}
+{% for year_group in posts_by_year reversed %}
+  {% assign posts_by_month = year_group.items | group_by_exp: "post", "post.date | date: '%m'" %}
+  {% assign year_max = 1 %}
+  {% for month_group in posts_by_month %}
+    {% if month_group.items.size > year_max %}{% assign year_max = month_group.items.size %}{% endif %}
+  {% endfor %}
+  <div class="year-section">
+    <h2>{{ year_group.name }} 年</h2>
+    <div class="monthly-stats">
+      {% for month_group in posts_by_month reversed %}
+        {% assign bar_width = month_group.items.size | times: 100 | divided_by: year_max %}
+        <div class="month-row">
+          <span class="month-label">{{ year_group.name }}-{{ month_group.name }}</span>
+          <div class="month-bar-wrap">
+            <div class="month-bar" style="width: {{ bar_width }}%"></div>
+          </div>
+          <span class="month-count">{{ month_group.items.size }} 篇</span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endfor %}
+
+{% if site.posts.size == 0 %}
+<p style="color:var(--text-muted);text-align:center;padding:2rem 0;">还没有文章呢，先去写一篇吧 ✏️</p>
+{% endif %}

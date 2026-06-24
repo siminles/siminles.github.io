@@ -1,0 +1,51 @@
+/* Rouge syntax highlighting - 自定义主题（暖色系，跟博客风格统一） */
+.highlight {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  font-family: "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  margin: 1em 0;
+}
+html.dark .highlight { background: #1f1f1f; }
+
+.highlight pre { margin: 0; padding: 0; background: none; }
+
+.highlight .c, .highlight .c1, .highlight .cm,
+.highlight .cs, .highlight .cd { color: #8b8b7a; font-style: italic; } /* Comment */
+.highlight .k, .highlight .kc, .highlight .kd,
+.highlight .kn, .highlight .kp, .highlight .kr,
+.highlight .kt { color: #b85c5c; font-weight: 500; } /* Keyword */
+.highlight .s, .highlight .s1, .highlight .s2,
+.highlight .sb, .highlight .sc, .highlight .sh,
+.highlight .si, .highlight .sx, .highlight .sr,
+.highlight .ss { color: #7a8b3d; } /* String */
+.highlight .n, .highlight .na, .highlight .nb,
+.highlight .nc, .highlight .nd, .highlight .ne,
+.highlight .nf, .highlight .nl, .highlight .nn,
+.highlight .nx, .highlight .py, .highlight .nt,
+.highlight .nv, .highlight .vc, .highlight .vg,
+.highlight .vi { color: #4a6a8b; } /* Name */
+.highlight .m, .highlight .mb, .highlight .mf,
+.highlight .mh, .highlight .mi, .highlight .il { color: #c9854a; } /* Number */
+.highlight .o, .highlight .ow { color: #b85c5c; } /* Operator */
+.highlight .p { color: var(--text); } /* Punctuation */
+.highlight .err { color: #d04747; } /* Error */
+.highlight .gd { color: #b85c5c; } /* Generic.Deleted */
+.highlight .gi { color: #7a8b3d; } /* Generic.Inserted */
+.highlight .gs { font-weight: 600; } /* Generic.Strong */
+.highlight .ge { font-style: italic; } /* Generic.Emph */
+
+html.dark .highlight .n,
+html.dark .highlight .na, html.dark .highlight .nb,
+html.dark .highlight .nc, html.dark .highlight .nd, html.dark .highlight .ne,
+html.dark .highlight .nf, html.dark .highlight .nl, html.dark .highlight .nn,
+html.dark .highlight .nx, html.dark .highlight .py, html.dark .highlight .nt,
+html.dark .highlight .nv, html.dark .highlight .vc, html.dark .highlight .vg,
+html.dark .highlight .vi { color: #9bb8d4; }
+html.dark .highlight .k { color: #e89999; }
+html.dark .highlight .s { color: #b5c878; }
+html.dark .highlight .m { color: #e0a878; }
