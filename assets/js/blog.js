@@ -119,22 +119,37 @@
   // ============== 图片懒加载兜底 ==============
   // 浏览器原生 loading="lazy" 兼容性不够时，用 IntersectionObserver 兜底
   function initLazyImages() {
-    if (!('IntersectionObserver' in window)) return;
-    var imgs = document.querySelectorAll('img:not([loading="lazy"])');
-    if (imgs.length === 0) return;
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          var img = e.target;
-          if (img.dataset.src) {
-            img.src = img.dataset.src;
-            img.removeAttribute('data-src');
-          }
-          io.unobserve(img);
+    // 1) 自动给文章里的所有 img 加上 loading="lazy" decoding="async"（如果有缺失）
+    var content = document.querySelector('.post-content');
+    if (content) {
+      var imgs = content.querySelectorAll('img');
+      imgs.forEach(function (img) {
+        if (!img.hasAttribute('loading')) {
+          img.setAttribute('loading', 'lazy');
+        }
+        if (!img.hasAttribute('decoding')) {
+          img.setAttribute('decoding', 'async');
         }
       });
-    });
-    imgs.forEach(function (img) { io.observe(img); });
+    }
+    // 2) 如果某些老浏览器不支持 loading="lazy"，用 IntersectionObserver 兏底
+    if (!('IntersectionObserver' in window) || !('loading' in HTMLImageElement.prototype)) {
+      var lazyImgs = document.querySelectorAll('img[loading="lazy"]');
+      if (lazyImgs.length === 0) return;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            var img = e.target;
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              img.removeAttribute('data-src');
+            }
+            io.unobserve(img);
+          }
+        });
+      });
+      lazyImgs.forEach(function (img) { io.observe(img); });
+    }
   }
 
   // ============== 启动 ==============
